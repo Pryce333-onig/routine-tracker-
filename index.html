@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#f8f9fa">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135768.png">
+  <title>Routine Tracker</title>
+  <style>
+    :root { --bg:#f8f9fa; --card:#fff; --text:#1a1a1a; --sub:#666; --primary:#2563eb; --success:#22c55e; --border:#e5e7eb; --radius:14px; }
+    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    body { margin:0; font-family:system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--text); padding:16px; max-width:480px; margin:0 auto; padding-bottom:40px; }
+    
+    header { text-align:center; margin-bottom:20px; }
+    h1 { margin:0 0 4px; font-size:1.3rem; font-weight:700; }
+    .date-nav { display:flex; align-items:center; justify-content:center; gap:16px; margin:12px 0; }
+    .nav-btn { background:var(--card); border:1px solid var(--border); width:36px; height:36px; border-radius:50%; font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .nav-btn:active { transform:scale(0.95); }
+    #current-date { font-weight:600; font-size:1rem; min-width:140px; text-align:center; }
+    #today-btn { background:var(--primary); color:#fff; border:none; padding:6px 12px; border-radius:20px; font-size:0.8rem; font-weight:600; cursor:pointer; }
+    
+    .progress-wrap { background:var(--card); border-radius:var(--radius); padding:16px; margin-bottom:20px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.05); }
+    .progress-bar { height:8px; background:var(--border); border-radius:4px; margin:10px 0 6px; overflow:hidden; }
+    .progress-fill { height:100%; background:var(--success); border-radius:4px; transition:width 0.3s ease; }
+    .progress-text { font-size:0.9rem; color:var(--sub); }
+    
+    .routine-list { display:flex; flex-direction:column; gap:12px; margin-bottom:24px; }
+    .routine-card { background:var(--card); border-radius:var(--radius); padding:16px; display:flex; align-items:center; gap:14px; box-shadow:0 1px 2px rgba(0,0,0,0.03); cursor:pointer; transition:all 0.2s; border-left:4px solid var(--border); }
+    .routine-card.completed { border-left-color:var(--success); background:#f0fdf4; }
+    .routine-card:active { transform:scale(0.99); }
+    .check-box { width:24px; height:24px; border:2px solid var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:14px; color:transparent; flex-shrink:0; transition:all 0.2s; }
+    .routine-card.completed .check-box { background:var(--success); border-color:var(--success); color:#fff; }
+    .routine-info { flex:1; }
+    .routine-label { font-weight:600; font-size:0.95rem; margin-bottom:2px; }
+    .routine-time { font-size:0.8rem; color:var(--sub); }
+    .routine-card.completed .routine-label { text-decoration:line-through; color:var(--sub); }
+    
+    .history-toggle { background:var(--card); border:1px solid var(--border); padding:12px; border-radius:var(--radius); text-align:center; font-weight:600; cursor:pointer; margin-bottom:12px; }
+    .history-list { display:none; flex-direction:column; gap:10px; margin-bottom:20px; }
+    .history-list.show { display:flex; }
+    .history-item { background:var(--card); border-radius:12px; padding:12px; display:flex; justify-content:space-between; align-items:center; font-size:0.9rem; }
+    .history-date { font-weight:500; }
+    .history-stat { font-size:0.85rem; color:var(--sub); }
+    
+    .export-btn { background:#fff; color:var(--primary); border:1px solid var(--primary); padding:12px; border-radius:12px; font-size:0.95rem; font-weight:600; width:100%; cursor:pointer; }
+    .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px); background:#1a1a1a; color:#fff; padding:10px 18px; border-radius:30px; font-size:0.85rem; font-weight:500; opacity:0; transition:all 0.3s; pointer-events:none; z-index:100; }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    
+    @media (prefers-color-scheme:dark) {      :root { --bg:#0d0d0d; --card:#1a1a1a; --text:#f1f5f9; --sub:#94a3b8; --border:#334155; --primary:#3b82f6; --success:#4ade80; }
+      .routine-card { box-shadow:0 1px 3px rgba(0,0,0,0.2); }
+      .routine-card.completed { background:#0f291e; }
+      .toast { background:#f1f5f9; color:#0d0d0d; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1> Routine Tracker</h1>
+    <div class="date-nav">
+      <button class="nav-btn" onclick="navigate(-1)">‹</button>
+      <div id="current-date"></div>
+      <button class="nav-btn" onclick="navigate(1)">›</button>
+    </div>
+    <button id="today-btn" onclick="goToday()">Today</button>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-text" id="progress-text">0 / 7 Completed</div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <div class="routine-list" id="routine-list"></div>
+
+  <div class="history-toggle" onclick="toggleHistory()"> View Past History</div>
+  <div class="history-list" id="history-list"></div>
+
+  <button class="export-btn" onclick="exportHistory()"> Export History</button>
+
+  <div class="toast" id="toast"> Updated</div>
+
+  <script>
+    // --- Configuration ---
+    const STORAGE_KEY = 'routine_tracker_v1';
+    const ROUTINE = [
+      { id: 'morning', label: 'Wake & Prepare for Work', time: 'Morning (Before Work)' },
+      { id: 'work', label: 'Work Hours', time: '7:00 AM – 12:00 PM' },
+      { id: 'saving', label: 'Save 800 or Above', time: 'Anytime' },
+      { id: 'igbo', label: 'Learn Igbo Language', time: '12:00 PM – 1:00 PM' },
+      { id: 'reading', label: 'Read 3 Books (Stoic, 50th Law, Atomic Habits)', time: '1:00 PM – 4:00 PM' },
+      { id: 'skills', label: 'Skill Practice (Writing/Finance/Prompt Eng/YouTube)', time: '4:00 PM – 8:00 PM' },
+      { id: 'evening', label: 'Close Shop, Relax & Sleep', time: '8:00 PM – 12:00 AM' }
+    ];
+
+    // --- State ---
+    let records = {};
+    let viewDate = new Date();
+    let historyOpen = false;
+    // --- DOM ---
+    const els = {
+      date: document.getElementById('current-date'),
+      list: document.getElementById('routine-list'),
+      progressText: document.getElementById('progress-text'),
+      progressFill: document.getElementById('progress-fill'),
+      historyList: document.getElementById('history-list'),
+      toast: document.getElementById('toast')
+    };
+
+    // --- Helpers ---
+    function getLocalDate(d = new Date()) {
+      const tz = d.getTimezoneOffset() * 60000;
+      return new Date(d.getTime() - tz).toISOString().split('T')[0];
+    }
+    function formatDateDisplay(dateStr) {
+      const d = new Date(dateStr + 'T00:00:00');
+      return d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+    }
+    function isSunday(d) { return d.getDay() === 0; }
+    function skipSundays(d, dir) {
+      d.setDate(d.getDate() + dir);
+      while(isSunday(d)) d.setDate(d.getDate() + dir);
+    }
+
+    // --- Core ---
+    function init() {
+      if(!supportsStorage()) return showError('Storage unavailable. Enable localStorage.');
+      
+      try { records = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { records = {}; }
+      
+      viewDate = new Date();
+      if(isSunday(viewDate)) skipSundays(viewDate, 1);
+      
+      render();
+    }
+
+    function supportsStorage() {
+      try { localStorage.setItem('__t','__t'); localStorage.removeItem('__t'); return true; } catch(e) { return false; }
+    }
+
+    function saveRecord(dateStr, data) {
+      records[dateStr] = data;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    }
+
+    function getTodayRecord(dateStr) {
+      if(!records[dateStr]) {
+        records[dateStr] = {};
+        ROUTINE.forEach(r => records[dateStr][r.id] = false);      }
+      return records[dateStr];
+    }
+
+    function render() {
+      const dateStr = getLocalDate(viewDate);
+      els.date.textContent = formatDateDisplay(dateStr);
+      
+      const data = getTodayRecord(dateStr);
+      const completed = Object.values(data).filter(Boolean).length;
+      const total = ROUTINE.length;
+      const pct = Math.round((completed/total)*100);
+      
+      els.progressText.textContent = `${completed} / ${total} Completed`;
+      els.progressFill.style.width = `${pct}%`;
+      
+      els.list.innerHTML = ROUTINE.map(r => `
+        <div class="routine-card ${data[r.id] ? 'completed' : ''}" onclick="toggle('${r.id}', '${dateStr}')">
+          <div class="check-box">${data[r.id] ? '' : ''}</div>
+          <div class="routine-info">
+            <div class="routine-label">${r.label}</div>
+            <div class="routine-time">${r.time}</div>
+          </div>
+        </div>
+      `).join('');
+      
+      renderHistory();
+    }
+
+    function toggle(id, dateStr) {
+      const data = getTodayRecord(dateStr);
+      data[id] = !data[id];
+      saveRecord(dateStr, data);
+      render();
+      if(navigator.vibrate) navigator.vibrate(20);
+      showToast(data[id] ? ' Marked Complete' : ' Reopened');
+    }
+
+    function navigate(dir) {
+      skipSundays(viewDate, dir);
+      render();
+    }
+
+    function goToday() {
+      viewDate = new Date();
+      if(isSunday(viewDate)) skipSundays(viewDate, 1);
+      render();
+      showToast(' Jumped to Today');
+    }
+    function toggleHistory() {
+      historyOpen = !historyOpen;
+      document.getElementById('history-list').classList.toggle('show', historyOpen);
+      document.querySelector('.history-toggle').textContent = historyOpen ? ' Hide History' : ' View Past History';
+    }
+
+    function renderHistory() {
+      const dates = Object.keys(records).sort((a,b) => b.localeCompare(a)).slice(0, 14);
+      if(dates.length === 0) {
+        els.historyList.innerHTML = '<div style="text-align:center;color:var(--sub);padding:10px">No past data yet.</div>';
+        return;
+      }
+      els.historyList.innerHTML = dates.map(d => {
+        const rec = records[d];
+        const comp = Object.values(rec).filter(Boolean).length;
+        return `
+          <div class="history-item">
+            <span class="history-date">${formatDateDisplay(d)}</span>
+            <span class="history-stat" style="color:${comp===ROUTINE.length?'var(--success)':'var(--sub)'}">${comp}/${ROUTINE.length}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function exportHistory() {
+      const dates = Object.keys(records).sort();
+      if(dates.length === 0) return showToast('No data to export');
+      
+      let csv = 'Date,' + ROUTINE.map(r=>r.label).join(',') + ',Completion Rate\n';
+      dates.forEach(d => {
+        const rec = records[d];
+        const comp = Object.values(rec).filter(Boolean).length;
+        const row = [d, ...ROUTINE.map(r => rec[r.id]?'Done':'Missed'), `${Math.round(comp/ROUTINE.length*100)}%`];
+        csv += row.join(',') + '\n';
+      });
+      
+      const blob = new Blob([csv], {type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download=`routine-history-${getLocalDate()}.csv`; 
+      document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+      showToast(' Exported CSV');
+    }
+
+    function showToast(msg) {
+      els.toast.textContent = msg; els.toast.classList.add('show');
+      setTimeout(()=>els.toast.classList.remove('show'), 1500);
+    }
+    function showError(msg) {
+      els.list.innerHTML = `<div style="text-align:center;color:#ef4444;padding:20px"> ${msg}</div>`;
+    }
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+
+  <!-- PWA Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then(reg => console.log(' PWA Registered'))
+          .catch(err => console.log(' PWA Failed', err));
+      });
+    }
+  </script>
+</body>
+</html>
