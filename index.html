@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,9 +48,12 @@
       flex-shrink:0; transition:all 0.2s; 
     }
     .routine-card.completed .check-box { background:var(--success); border-color:var(--success); color:#fff; }
-    .routine-info { flex:1; }    .routine-label { font-weight:600; font-size:0.95rem; margin-bottom:2px; }
+    .routine-info { flex:1; }
+    .routine-label { font-weight:600; font-size:0.95rem; margin-bottom:2px; }
     .routine-time { font-size:0.8rem; color:var(--sub); }
+    .routine-reward { font-size:0.75rem; color:var(--primary); margin-top:3px; font-style:italic; }
     .routine-card.completed .routine-label { text-decoration:line-through; color:var(--sub); }
+    .routine-card.completed .routine-reward { color:var(--sub); }
     
     .history-toggle { background:var(--card); border:1px solid var(--border); padding:12px; border-radius:var(--radius); text-align:center; font-weight:600; cursor:pointer; margin-bottom:12px; }
     .history-list { display:none; flex-direction:column; gap:10px; margin-bottom:20px; }
@@ -77,11 +81,11 @@
 </head>
 <body>
   <header>
-    <h1> Routine Tracker</h1>
+    <h1>📅 Routine Tracker</h1>
     <div class="date-nav">
-      <button class="nav-btn" onclick="navigate(-1)">�</button>
+      <button class="nav-btn" onclick="navigate(-1)">‹</button>
       <div id="current-date"></div>
-      <button class="nav-btn" onclick="navigate(1)">�</button>
+      <button class="nav-btn" onclick="navigate(1)">›</button>
     </div>
     <button id="today-btn" onclick="goToday()">Today</button>
   </header>
@@ -93,22 +97,23 @@
 
   <div class="routine-list" id="routine-list"></div>
 
-  <div class="history-toggle" onclick="toggleHistory()"> View Past History</div>
+  <div class="history-toggle" onclick="toggleHistory()">📊 View Past History</div>
   <div class="history-list" id="history-list"></div>
-  <button class="export-btn" onclick="exportHistory()"> Export History</button>
-  <div class="toast" id="toast"> Updated</div>
+  <button class="export-btn" onclick="exportHistory()">📤 Export History</button>
+
+  <div class="toast" id="toast">✅ Updated</div>
 
   <script>
     const STORAGE_KEY = 'routine_tracker_v1';
     const ROUTINE = [
-  { id: 'morning', label: '\u{1F305} Wake & Prepare for Work', time: 'Morning' },
-  { id: 'work', label: '\u{1F4BC} Work Hours', time: '7:00 AM � 12:00 PM' },
-  { id: 'saving', label: '\u{1F4B0} Save 800 or Above', time: 'Anytime', priority: true },
-  { id: 'igbo', label: '\u{1F5E3}\u{FE0F} Learn Igbo or Language', time: '12:00 PM � 1:00 PM', priority: true },
-  { id: 'reading', label: '\u{1F4DA} Read 3 Books (Stoic, 50th Law, Atomic Habits)', time: '1:00 PM � 4:00 PM', priority: true },
-  { id: 'skills', label: '\u{270D}\u{FE0F} Skill Practice (Writing, Prompt Eng)', time: '4:00 PM � 8:00 PM', priority: true },
-  { id: 'evening', label: '\u{1F319} Close Shop, Relax & Sleep', time: '8:00 PM � 12:00 AM' }
-];
+      { id: 'morning', label: '🌅 Wake & Prepare for Work', time: 'Morning', reward: 'Doomscroll clip or short movie before starting' },
+      { id: 'work', label: '💼 Work Hours', time: '7:00 AM – 12:00 PM', reward: 'Music or research during work hours' },
+      { id: 'saving', label: '💰 Save 1,000 or Above', time: 'Anytime', reward: 'Eat breakfast before Saving' },
+      { id: 'igbo', label: '🗣️ Learn Igbo Language', time: '12:00 PM – 12:30 PM' },
+      { id: 'reading', label: '📚 Read 3 Books (Stoic, Laws of Human Nature, Atomic Habits)', time: '12:30 PM – 3:30 PM', priority: true },
+      { id: 'skills', label: '️ Skill Practice (Writing, Prompt Eng)', time: '3:30 PM – 7:30 PM', priority: true },
+      { id: 'evening', label: '🌙 Close Shop, Relax & Sleep', time: '7:30 PM – 11:30 PM' }
+    ];
 
     let records = {};
     let viewDate = new Date();
@@ -145,7 +150,8 @@
       render();
     }
     function supportsStorage() {
-      try { localStorage.setItem('__t','__t'); localStorage.removeItem('__t'); return true; } catch(e) { return false; }    }
+      try { localStorage.setItem('__t','__t'); localStorage.removeItem('__t'); return true; } catch(e) { return false; }
+    }
 
     function saveRecord(dateStr, data) {
       records[dateStr] = data;
@@ -173,10 +179,11 @@
       
       els.list.innerHTML = ROUTINE.map(r => `
         <div class="routine-card ${data[r.id] ? 'completed' : ''} ${r.priority ? 'priority' : ''}" onclick="toggle('${r.id}', '${dateStr}')">
-          <div class="check-box">${data[r.id] ? '' : ''}</div>
+          <div class="check-box">${data[r.id] ? '✓' : ''}</div>
           <div class="routine-info">
             <div class="routine-label">${r.label}</div>
             <div class="routine-time">${r.time}</div>
+            ${r.reward ? `<div class="routine-reward">🎁 ${r.reward}</div>` : ''}
           </div>
         </div>
       `).join('');
@@ -190,23 +197,24 @@
       saveRecord(dateStr, data);
       render();
       if(navigator.vibrate) navigator.vibrate(20);
-      showToast(data[id] ? ' Marked Complete' : ' Reopened');
+      showToast(data[id] ? '✓ Marked Complete' : '↩ Reopened');
     }
     function navigate(dir) {
       skipSundays(viewDate, dir);
-      render();    }
+      render();
+    }
 
     function goToday() {
       viewDate = new Date();
       if(isSunday(viewDate)) skipSundays(viewDate, 1);
       render();
-      showToast(' Jumped to Today');
+      showToast('📅 Jumped to Today');
     }
 
     function toggleHistory() {
       historyOpen = !historyOpen;
       els.historyList.classList.toggle('show', historyOpen);
-      document.querySelector('.history-toggle').textContent = historyOpen ? ' Hide History' : ' View Past History';
+      document.querySelector('.history-toggle').textContent = historyOpen ? '🙈 Hide History' : '📊 View Past History';
     }
 
     function renderHistory() {
@@ -240,14 +248,15 @@
       const blob = new Blob([csv], {type:'text/csv'});
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a'); a.href=url; a.download=`routine-history-${getLocalDate()}.csv`;       document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-      showToast(' Exported CSV');
+      showToast('📥 Exported CSV');
     }
 
-    function showToast(msg) {      els.toast.textContent = msg; els.toast.classList.add('show');
+    function showToast(msg) {
+      els.toast.textContent = msg; els.toast.classList.add('show');
       setTimeout(()=>els.toast.classList.remove('show'), 1500);
     }
     function showError(msg) {
-      els.list.innerHTML = `<div style="text-align:center;color:#ef4444;padding:20px"> ${msg}</div>`;
+      els.list.innerHTML = `<div style="text-align:center;color:#ef4444;padding:20px">⚠️ ${msg}</div>`;
     }
 
     document.addEventListener('DOMContentLoaded', init);
