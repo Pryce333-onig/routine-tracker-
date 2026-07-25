@@ -315,16 +315,16 @@
 </head>
 <body>
   <header>
-    <h1> Routine Tracker</h1>
+    <h1>📅 Routine Tracker</h1>
     <div class="sync-indicator" onclick="forceSync()" title="Cloud Sync Status">
       <div class="sync-dot" id="sync-dot"></div>
       <span id="sync-text">Offline</span>
     </div>
     <div class="view-switcher">
-      <button class="view-btn active" onclick="switchAppView('today')">📅 Today</button>
+      <button class="view-btn active" onclick="switchAppView('today')"> Today</button>
       <button class="view-btn" onclick="switchAppView('habits')">🔄 Habits</button>
       <button class="view-btn" onclick="switchAppView('calendar')">🗓️ Calendar</button>
-      <button class="view-btn" onclick="switchAppView('analytics')"> Analytics</button>
+      <button class="view-btn" onclick="switchAppView('analytics')">📈 Analytics</button>
     </div>
   </header>
 
@@ -352,7 +352,7 @@
     </div>
     <div class="manage-bar">
       <button class="manage-btn" onclick="openAddModal()">➕ Add Routine</button>
-      <button class="manage-btn" onclick="exportAllData()"> Export All</button>
+      <button class="manage-btn" onclick="exportAllData()">📤 Export All</button>
       <button class="manage-btn" onclick="document.getElementById('import-file').click()">📥 Import</button>
       <input type="file" id="import-file" accept=".json" style="display:none" onchange="importAllData(this)">
       <button class="manage-btn danger" onclick="clearAllRoutines()">🧹 Clear Routines</button>
@@ -371,15 +371,15 @@
         <select id="task-category" style="flex:1;">
           <option value="General">📋 General</option>
           <option value="Sports">🏃 Sports</option>
-          <option value="Health">💚 Health</option>
+          <option value="Health"> Health</option>
           <option value="Learning">🎓 Learning</option>
           <option value="Creative">🎨 Creative</option>
-          <option value="Work"> Work</option>
+          <option value="Work">💼 Work</option>
         </select>
         <select id="task-priority" style="flex:1;">
-          <option value="1"> Priority 1</option>
+          <option value="1">🟡 Priority 1</option>
           <option value="2" selected>🔵 Priority 2</option>
-          <option value="3"> Priority 3</option>
+          <option value="3">⚪ Priority 3</option>
         </select>
       </div>
       <div class="input-row">
@@ -412,8 +412,8 @@
       </div>
       <div class="input-row" id="task-extra-row">
         <input type="url" id="task-attachment" placeholder="📎 Attachment/Link" inputmode="url">
-        <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; color:var(--sub); cursor:pointer;"><input type="checkbox" id="task-reminder"> 🔔 Reminder</label>
-        <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; color:var(--sub); cursor:pointer;"><input type="checkbox" id="task-recurring">  Recurring</label>
+        <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; color:var(--sub); cursor:pointer;"><input type="checkbox" id="task-reminder">  Reminder</label>
+        <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; color:var(--sub); cursor:pointer;"><input type="checkbox" id="task-recurring"> 🔄 Recurring</label>
       </div>
       <button class="btn-primary" onclick="addTask()">+ Add Entry</button>
     </div>
@@ -455,7 +455,7 @@
     <div class="chart-title" style="margin-bottom:12px;">🎯 Habit Scores & Metrics</div>
     <div id="habit-scores-list"></div>
     <div class="chart-section" style="margin-top:24px;">
-      <div class="chart-title">📊 Percent Successful Days</div>
+      <div class="chart-title"> Percent Successful Days</div>
       <div id="bar-chart-container"></div>
     </div>
     <div class="chart-section">
@@ -472,7 +472,7 @@
     </div>
     <!-- 14.4 Progress Rings & Heatmaps Containers -->
     <div class="chart-section">
-      <div class="chart-title">🔵 Weekly Progress Rings</div>
+      <div class="chart-title"> Weekly Progress Rings</div>
       <div class="rings-container" id="rings-container"></div>
     </div>
     <div class="chart-section">
@@ -497,10 +497,10 @@
       <div class="form-group">
         <label class="form-label">Schedule</label>
         <select id="edit-schedule" class="form-input">
-          <option value="daily">🔄 Daily</option>
+          <option value="daily"> Daily</option>
           <option value="today">📅 Today</option>
           <option value="tomorrow">📆 Tomorrow</option>
-          <option value="specific">📌 Specific</option>
+          <option value="specific"> Specific</option>
         </select>
       </div>
       <div class="form-group" id="date-specific-group" style="display:none;"><label class="form-label">Date</label><input type="date" id="edit-specific-date" class="form-input"></div>
@@ -568,7 +568,7 @@
 
     const ROUTINE_KEY='rt_routines', TASK_KEY='rt_tasks_v16', RECORDS_KEY='rt_records';
     let routines=[], tasks=[], records={}, viewDate=new Date(), historyOpen=false, undoStack=[], editingRoutineId=null, isAddingNew=false, currentType='task', editingTaskId=null, selectedFreq=[], calendarDate=new Date();
-    const CAT_ICONS = {'Work':'💼','General':'📋','Sports':'🏃','Health':'💚','Learning':'🎓','Creative':''};
+    const CAT_ICONS = {'Work':'💼','General':'','Sports':'🏃','Health':'','Learning':'🎓','Creative':''};
 
     function init(){
       loadRoutines(); loadTasks(); loadRecords();
@@ -699,7 +699,7 @@
     function toggleTaskComplete(id){
       const t=tasks.find(x=>x.id===id); if(!t) return; t.completed=!t.completed; if(t.completed){t.completedAt=Date.now(); t.status='Done';} else {delete t.completedAt; t.status='Pending';} saveTasks(); if(navigator.vibrate) navigator.vibrate(t.completed?[50,50,50]:20); const card=document.querySelector(`.task-card[data-id="${id}"]`); if(card){card.classList.remove('success-pop'); void card.offsetWidth; if(t.completed) card.classList.add('success-pop'); const ov=card.querySelector('.check-overlay'); if(ov){ov.classList.remove('active'); void ov.offsetWidth; if(t.completed) ov.classList.add('active');}}
     }
-    function deleteTask(id){ if(!confirm('🗑️ Delete?')) return; pushUndo(); tasks=tasks.filter(t=>t.id!==id); saveTasks(); showToast('🗑️ Deleted'); }
+    function deleteTask(id){ if(!confirm('🗑️ Delete?')) return; pushUndo(); tasks=tasks.filter(t=>t.id!==id); saveTasks(); showToast('️ Deleted'); }
     function openTaskEdit(id){ editingTaskId=id; const t=tasks.find(x=>x.id===id); if(!t) return; document.getElementById('edit-task-name').value=t.name; document.getElementById('edit-task-category').value=t.category; document.getElementById('edit-task-priority').value=t.priority; document.getElementById('edit-task-date').value=t.date||''; document.getElementById('edit-task-time').value=t.time||''; document.getElementById('edit-task-notes').value=t.notes||''; const hf=document.getElementById('edit-habit-fields'); if(t.type==='habit'){hf.classList.add('visible'); document.getElementById('edit-habit-desc').value=t.desc||''; document.getElementById('edit-habit-goal').value=t.goal||''; const fs=document.getElementById('edit-freq-selector'); fs.innerHTML=''; ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach((d,i)=>{fs.innerHTML+=`<div class="freq-day ${t.frequency&&t.frequency.includes(i.toString())?'active':''}" data-day="${i}" onclick="this.classList.toggle('active')">${d}</div>`;});
       const ac=document.getElementById('alarms-container'); ac.innerHTML='';
       if(t.alarms && t.alarms.length) t.alarms.forEach(tm=>{const div=document.createElement('div'); div.className='alarm-item'; div.innerHTML=`<input type="time" class="alarm-time-input form-input" style="width:auto;margin:0;" value="${tm}"><button class="alarm-remove" onclick="this.parentElement.remove()">✕</button>`; ac.appendChild(div);});
@@ -713,26 +713,38 @@
       // 5. Save Extra Goals
       t.extraGoals=Array.from(document.querySelectorAll('#extra-goals-container input')).map(i=>i.value).filter(Boolean);
     } saveTasks(); closeTaskEditModal(); showToast('✅ Updated'); }
-    function rescheduleTask(){ if(!editingTaskId) return; const t=tasks.find(x=>x.id===editingTaskId); if(!t) return; const nd=prompt('📅 New date (YYYY-MM-DD):', t.date||getLocalDate(new Date())); if(nd && /^\d{4}-\d{2}-\d{2}$/.test(nd)){t.date=nd; if(t.type==='habit'){t.startDate=nd; const e=new Date(nd); e.setDate(e.getDate()+7); t.endDate=getLocalDate(e);} saveTasks(); closeTaskEditModal(); showToast('📅 Rescheduled');} }
+    function rescheduleTask(){ if(!editingTaskId) return; const t=tasks.find(x=>x.id===editingTaskId); if(!t) return; const nd=prompt('📅 New date (YYYY-MM-DD):', t.date||getLocalDate(new Date())); if(nd && /^\d{4}-\d{2}-\d{2}$/.test(nd)){t.date=nd; if(t.type==='habit'){t.startDate=nd; const e=new Date(nd); e.setDate(e.getDate()+7); t.endDate=getLocalDate(e);} saveTasks(); closeTaskEditModal(); showToast(' Rescheduled');} }
 
     // === RENDERING ===
     function getLocalDate(d=new Date()){ return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().split('T')[0]; }
     function formatDateDisplay(ds){ return new Date(ds+'T00:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}); }
     function isSunday(d){ return d.getDay()===0; }
-    function skipSundays(d,dir){ d.setDate(d.getDate()+dir); while(isSunday(d)) d.setDate(d.getDate()+dir); }
-    function navigate(dir){ skipSundays(viewDate,dir); selectDate(getLocalDate(viewDate)); }
-    function goToday(){ viewDate=new Date(); if(isSunday(viewDate)) skipSundays(viewDate,1); selectDate(getLocalDate(viewDate)); showToast(' Today'); }
+    // Sunday skipping logic removed from navigation
+    
+    function navigate(dir){ 
+      // FIXED: Removed skipSundays call
+      viewDate.setDate(viewDate.getDate() + dir); 
+      selectDate(getLocalDate(viewDate)); 
+    }
+    function goToday(){ 
+      // FIXED: Removed isSunday check and skipSundays call
+      viewDate = new Date(); 
+      selectDate(getLocalDate(viewDate)); 
+      showToast('📅 Today'); 
+    }
+    
     function toggleHistory(){ historyOpen=!historyOpen; document.getElementById('history-list').classList.toggle('show',historyOpen); }
     function renderAll(){ renderDateStrip(); renderRoutineView(); renderTasks(); renderHistory(); }
     function renderRoutineView(){
       const list=document.getElementById('routine-list'); const ds=getLocalDate(viewDate);
+      // Sunday is no longer filtered out here implicitly by viewDate skipping
       const todayR=routines.filter(r=>{ if(r.schedule==='daily') return true; if(r.schedule==='today') return r.specificDate===ds||(!r.specificDate&&ds===getLocalDate(new Date())); if(r.schedule==='tomorrow'){const tmrw=new Date();tmrw.setDate(tmrw.getDate()+1);return r.specificDate===getLocalDate(tmrw)||(!r.specificDate&&ds===getLocalDate(tmrw));} if(r.schedule==='specific') return r.specificDate===ds; return true; });
       const comp=Object.keys(records[ds]||{}).filter(k=>records[ds][k]).length;
       document.getElementById('progress-text').textContent=`${comp} / ${todayR.length} Completed`;
       document.getElementById('progress-fill').style.width=todayR.length?`${Math.round((comp/todayR.length)*100)}%`:'0%';
       if(!todayR.length){ list.innerHTML=`<div class="empty-state"><div style="font-size:3rem;margin-bottom:12px;">📭</div><div>No routines for this day.</div></div>`; return; }
       list.innerHTML=todayR.map((r,idx)=>{ const done=records[ds]?.[r.id]; const ts=(r.start&&r.end)?`${r.start} - ${r.end}`:(r.start||r.end||'Flexible'); const db=r.schedule==='daily'?'':`<span style="font-size:0.7rem;background:var(--bg);padding:2px 6px;border-radius:8px;margin-left:6px;">${r.schedule}</span>`;
-        return `<div class="routine-card ${done?'completed':''} ${r.priority?'priority':''}" onclick="toggleRoutine('${r.id}','${ds}')"><div class="check-box">${done?'✓':''}</div><div class="routine-info"><div class="routine-header"><div class="routine-label">${r.title}</div><div class="routine-controls" onclick="event.stopPropagation()"><button class="ctrl-btn" onclick="moveRoutine('${r.id}',-1)" ${idx===0?'disabled':''}>⬆️</button><button class="ctrl-btn" onclick="moveRoutine('${r.id}',1)" ${idx===todayR.length-1?'disabled':''}>⬇️</button><button class="ctrl-btn" onclick="openEditModal('${r.id}')">✏️</button><button class="ctrl-btn delete" onclick="deleteRoutine('${r.id}')">🗑️</button></div></div><div class="routine-time"> ${ts} ${db}</div>${r.desc?`<div class="routine-desc">${r.desc}</div>`:''}${r.reward?`<div class="routine-reward">🎁 ${r.reward}</div>`:''}</div></div>`; }).join('');
+        return `<div class="routine-card ${done?'completed':''} ${r.priority?'priority':''}" onclick="toggleRoutine('${r.id}','${ds}')"><div class="check-box">${done?'✓':''}</div><div class="routine-info"><div class="routine-header"><div class="routine-label">${r.title}</div><div class="routine-controls" onclick="event.stopPropagation()"><button class="ctrl-btn" onclick="moveRoutine('${r.id}',-1)" ${idx===0?'disabled':''}>️</button><button class="ctrl-btn" onclick="moveRoutine('${r.id}',1)" ${idx===todayR.length-1?'disabled':''}>️</button><button class="ctrl-btn" onclick="openEditModal('${r.id}')">✏️</button><button class="ctrl-btn delete" onclick="deleteRoutine('${r.id}')">🗑️</button></div></div><div class="routine-time">⏰ ${ts} ${db}</div>${r.desc?`<div class="routine-desc">${r.desc}</div>`:''}${r.reward?`<div class="routine-reward">🎁 ${r.reward}</div>`:''}</div></div>`; }).join('');
     }
     function toggleRoutine(id,ds){ if(!records[ds]) records[ds]={}; records[ds][id]=!records[ds][id]; saveRecords(); renderRoutineView(); if(navigator.vibrate) navigator.vibrate(20); }
     function renderHistory(){ const dates=Object.keys(records).sort((a,b)=>b.localeCompare(a)).slice(0,14); const c=document.getElementById('history-list'); if(!dates.length){c.innerHTML='<div style="text-align:center;color:var(--sub);padding:10px">No history.</div>'; return;} c.innerHTML=dates.map(d=>{const comp=Object.values(records[d]).filter(Boolean).length;return `<div class="history-item"><span>${formatDateDisplay(d)}</span><span style="color:${comp>0?'var(--success)':'var(--sub)'}">${comp} done</span></div>`;}).join(''); }
@@ -751,13 +763,13 @@
       }).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
       const cont=document.getElementById('task-list-today');
       cont.innerHTML=filtered.length?filtered.map(t=>{
-        const pc=`p${t.priority}`, ti=t.type==='habit'?'<span class="habit-badge">🔄 Habit</span>':'', ci=CAT_ICONS[t.category]||'📋', sb=t.completed?'<span style="font-size:0.7rem;color:var(--success);font-weight:600;">✅ Done</span>':'<span style="font-size:0.7rem;color:var(--sub);font-weight:600;">⏳ Pending</span>';
-        const alarmBadge=(t.alarms && t.alarms.length)?`<span class="alarm-badge"> ${t.alarms.length}</span>`:'';
+        const pc=`p${t.priority}`, ti=t.type==='habit'?'<span class="habit-badge"> Habit</span>':'', ci=CAT_ICONS[t.category]||'📋', sb=t.completed?'<span style="font-size:0.7rem;color:var(--success);font-weight:600;">✅ Done</span>':'<span style="font-size:0.7rem;color:var(--sub);font-weight:600;">⏳ Pending</span>';
+        const alarmBadge=(t.alarms && t.alarms.length)?`<span class="alarm-badge">🔔 ${t.alarms.length}</span>`:'';
         // 2. Recurring Icon Fixed
         const recurringIcon=(t.recurring || t.type==='habit')?'<span>🔄</span>':'';
-        let hi=''; if(t.type==='habit'){if(t.goal) hi+=`<div class="habit-goal">🎯 ${t.goal}</div>`; if(t.frequency?.length){const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat']; hi+=`<div class="habit-freq">📅 ${t.frequency.map(d=>days[parseInt(d)]).join(' - ')}</div>`;}}
-        const ni=t.notes?`<div class="notes-preview" onclick="openNotesPreview('${t.id}')"><span>📝</span> ${t.notes.length>30?t.notes.substring(0,30)+'...':t.notes}</div>`:`<div class="notes-preview" style="opacity:0.6;cursor:pointer;" onclick="openNotesPreview('${t.id}')"><span>📝</span> Add note...</div>`;
-        return `<div class="task-card type-${t.type} ${t.completed?'completed':''}" data-id="${t.id}"><div class="check-overlay"><span>✅</span></div><div class="task-checkbox ${t.completed?'checked':''}" onclick="toggleTaskComplete('${t.id}')"></div><div class="task-content"><div class="task-header"><div class="task-title"><span class="cat-icon">${ci}</span> ${t.name} ${ti}</div>${sb}${alarmBadge}</div><div class="task-meta"><span>📅 ${t.type==='habit'?(t.startDate||'Starts today'):(t.date||'No date')}</span><span>⏰ ${t.time||'No time'}</span>${t.duration?`<span>⏱️ ${t.duration}m</span>`:''}${recurringIcon}${t.type==='task'?(t.reminder?'<span>🔔</span>':''):(t.reminder?'<span>🔔</span>':'')}<span class="prio-badge ${pc}"><span class="prio-flag"></span>${t.priority}</span></div>${t.desc&&t.type==='habit'?`<div style="font-size:0.8rem;color:var(--sub);margin-bottom:4px;">${t.desc}</div>`:''}${hi}${t.tags?.length?`<div class="task-tags">${t.tags.map(tag=>`<span class="tag">${tag}</span>`).join('')}</div>`:''}${ni}<div class="task-actions">${t.type==='task'&&t.github?`<button class="task-btn" onclick="window.open('${t.github}')">💻</button>`:''}${t.type==='task'&&t.attachment?`<button class="task-btn" onclick="window.open('${t.attachment}')"></button>`:''}<button class="task-btn" onclick="openTaskEdit('${t.id}')">✏️</button><button class="task-delete" onclick="deleteTask('${t.id}')">🗑️</button></div></div></div>`;
+        let hi=''; if(t.type==='habit'){if(t.goal) hi+=`<div class="habit-goal"> ${t.goal}</div>`; if(t.frequency?.length){const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat']; hi+=`<div class="habit-freq">📅 ${t.frequency.map(d=>days[parseInt(d)]).join(' - ')}</div>`;}}
+        const ni=t.notes?`<div class="notes-preview" onclick="openNotesPreview('${t.id}')"><span>📝</span> ${t.notes.length>30?t.notes.substring(0,30)+'...':t.notes}</div>`:`<div class="notes-preview" style="opacity:0.6;cursor:pointer;" onclick="openNotesPreview('${t.id}')"><span></span> Add note...</div>`;
+        return `<div class="task-card type-${t.type} ${t.completed?'completed':''}" data-id="${t.id}"><div class="check-overlay"><span>✅</span></div><div class="task-checkbox ${t.completed?'checked':''}" onclick="toggleTaskComplete('${t.id}')"></div><div class="task-content"><div class="task-header"><div class="task-title"><span class="cat-icon">${ci}</span> ${t.name} ${ti}</div>${sb}${alarmBadge}</div><div class="task-meta"><span>📅 ${t.type==='habit'?(t.startDate||'Starts today'):(t.date||'No date')}</span><span>⏰ ${t.time||'No time'}</span>${t.duration?`<span>⏱️ ${t.duration}m</span>`:''}${recurringIcon}${t.type==='task'?(t.reminder?'<span>🔔</span>':''):(t.reminder?'<span>🔔</span>':'')}<span class="prio-badge ${pc}"><span class="prio-flag"></span>${t.priority}</span></div>${t.desc&&t.type==='habit'?`<div style="font-size:0.8rem;color:var(--sub);margin-bottom:4px;">${t.desc}</div>`:''}${hi}${t.tags?.length?`<div class="task-tags">${t.tags.map(tag=>`<span class="tag">${tag}</span>`).join('')}</div>`:''}${ni}<div class="task-actions">${t.type==='task'&&t.github?`<button class="task-btn" onclick="window.open('${t.github}')">💻</button>`:''}${t.type==='task'&&t.attachment?`<button class="task-btn" onclick="window.open('${t.attachment}')">📎</button>`:''}<button class="task-btn" onclick="openTaskEdit('${t.id}')">✏️</button><button class="task-delete" onclick="deleteTask('${t.id}')">🗑️</button></div></div></div>`;
       }).join(''):'<div style="text-align:center;color:var(--sub);padding:20px">No entries match.</div>';
     }
     function openNotesPreview(id){ const t=tasks.find(x=>x.id===id); if(!t) return; document.getElementById('notes-content').textContent=t.notes||'No notes.'; document.getElementById('notes-modal').classList.add('active'); }
@@ -772,7 +784,7 @@
         const streak=calcStreak(h);
         const success=calcSuccessRate(h);
         const alarmCount=(h.alarms && h.alarms.length)?`<span class="badge streak">🔔 ${h.alarms.length} Alarms</span>`:'';
-        return `<div class="habit-stat-card"><div class="habit-stat-header"><div class="habit-stat-title">${CAT_ICONS[h.category]||''} ${h.name}</div><div class="habit-stat-badges"><span class="badge streak">🔥 ${streak}d</span><span class="badge success">✅ ${success}%</span>${alarmCount}</div></div>${h.goal?`<div style="font-size:0.85rem;color:var(--sub);margin-bottom:4px;">🎯 ${h.goal}</div>`:''}${h.frequency?.length?`<div style="font-size:0.8rem;color:var(--sub);margin-bottom:8px;">📅 ${h.frequency.map(d=>['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][parseInt(d)]).join(' ')}</div>`:''}<div class="habit-stat-bar"><div class="habit-stat-fill" style="width:${success}%"></div></div></div>`;
+        return `<div class="habit-stat-card"><div class="habit-stat-header"><div class="habit-stat-title">${CAT_ICONS[h.category]||''} ${h.name}</div><div class="habit-stat-badges"><span class="badge streak">🔥 ${streak}d</span><span class="badge success">✅ ${success}%</span>${alarmCount}</div></div>${h.goal?`<div style="font-size:0.85rem;color:var(--sub);margin-bottom:4px;"> ${h.goal}</div>`:''}${h.frequency?.length?`<div style="font-size:0.8rem;color:var(--sub);margin-bottom:8px;">📅 ${h.frequency.map(d=>['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][parseInt(d)]).join(' ')}</div>`:''}<div class="habit-stat-bar"><div class="habit-stat-fill" style="width:${success}%"></div></div></div>`;
       }).join('');
     }
     function calcStreak(h){
@@ -983,7 +995,7 @@
           const diff=alarmTime-now;
           if(diff>0 && diff<86400000){
             setTimeout(()=>{
-              new Notification('🔔 Habit Reminder', {
+              new Notification(' Habit Reminder', {
                 body:`Time for ${h.name}!`, 
                 tag:`${h.id}-${time}`,
                 actions: [
@@ -1036,7 +1048,7 @@
     function importAllData(input){
       const file=input.files[0]; if(!file) return;
       // 4. Import Confirmation Added
-      if(!confirm('️ This will overwrite all your current routines, tasks, and records. Are you sure you want to continue?')) {
+      if(!confirm('⚠️ This will overwrite all your current routines, tasks, and records. Are you sure you want to continue?')) {
         input.value=''; return;
       }
       const reader=new FileReader();
@@ -1047,7 +1059,7 @@
           if(data.tasks) tasks=data.tasks;
           if(data.records) records=data.records;
           saveRoutines(); saveTasks(); saveRecords(); showToast('📥 Imported Successfully');
-        }catch(err){ showToast('❌ Invalid File'); }
+        }catch(err){ showToast(' Invalid File'); }
       };
       reader.readAsText(file); input.value='';
     }
