@@ -18,6 +18,8 @@
       --prio-1:#f59e0b; --prio-2:#3b82f6; --prio-3:#e5e7eb;
       --heat-0:#ebedf0; --heat-1:#9be9a8; --heat-2:#40c463; --heat-3:#30a14e; --heat-4:#216e39;
       --gauge-bg:#e5e7eb; --gauge-fill:#3b82f6;
+      --overdue-bg:#fef2f2; --overdue-text:#ef4444;
+      --today-bg:#eff6ff; --today-text:#2563eb;
     }
     * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
     body { margin:0; font-family:system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--text); padding:16px; max-width:480px; margin:0 auto; padding-bottom:calc(var(--nav-height) + 20px); }
@@ -70,7 +72,9 @@
     .ctrl-btn.delete:hover { background:var(--pending); color:#fff; }
     
     .task-card { background:var(--card); border-radius:var(--radius); padding:14px; margin-bottom:10px; border-left:4px solid var(--primary); box-shadow:0 1px 2px rgba(0,0,0,0.03); display:flex; gap:12px; align-items:flex-start; position:relative; overflow:hidden; transition:transform 0.2s; }
-    .task-card.completed { opacity:0.8; border-left-color: var(--success) !important; background: #f0fdf4; }
+    .task-card.completed { opacity:0.7; border-left-color: var(--success) !important; background: #f0fdf4; }
+    .task-card.overdue { border-left-color: var(--pending); background: var(--overdue-bg); }
+    .task-card.today { border-left-color: var(--primary); background: var(--today-bg); }
     .task-card.success-pop { animation: successBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     @keyframes successBounce { 0%{transform:scale(1);} 50%{transform:scale(1.04);} 100%{transform:scale(1);} }
     
@@ -276,6 +280,13 @@
     .routine-extra-goals { display:flex; flex-wrap:wrap; gap:4px; margin-top:6px; }
     .extra-goal-badge { font-size:0.7rem; background:var(--bg); padding:2px 6px; border-radius:4px; color:var(--sub); }
 
+    /* SECTION 18: TASK PERSISTENCE STYLES */
+    .task-date-badge { font-size:0.7rem; padding:2px 6px; border-radius:12px; background:var(--bg); font-weight:600; }
+    .task-date-badge.overdue { background:var(--overdue-bg); color:var(--overdue-text); }
+    .task-date-badge.today { background:var(--today-bg); color:var(--today-text); }
+    .section-header { font-size:0.85rem; font-weight:700; color:var(--sub); margin:16px 0 8px; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:8px; }
+    .section-header::after { content:''; flex:1; height:1px; background:var(--border); }
+
     @media (prefers-color-scheme:dark) {
       :root { 
         --bg:#0d0d0d; --card:#1a1a1a; --text:#f1f5f9; --sub:#94a3b8; --border:#334155; 
@@ -284,6 +295,8 @@
         --prio-3:#334155;
         --heat-0:#161b22; --heat-1:#0e4429; --heat-2:#006d32; --heat-3:#26a641; --heat-4:#39d353;
         --gauge-bg:#334155;
+        --overdue-bg:#3b1111; --overdue-text:#f87171;
+        --today-bg:#111b2b; --today-text:#60a5fa;
       }
       .routine-card { box-shadow:0 1px 3px rgba(0,0,0,0.2); }
       .routine-card.completed { background:#0f291e; }
@@ -328,14 +341,14 @@
     </div>
     <!-- 4 TABS -->
     <div class="view-switcher">
-      <button class="view-btn active" onclick="switchAppView('routines')"><span class="tab-icon"></span>Routines</button>
+      <button class="view-btn active" onclick="switchAppView('routines')"><span class="tab-icon">📅</span>Routines</button>
       <button class="view-btn" onclick="switchAppView('tasks')"><span class="tab-icon">📋</span>Tasks</button>
-      <button class="view-btn" onclick="switchAppView('calendar')"><span class="tab-icon">🗓️</span>Calendar</button>
+      <button class="view-btn" onclick="switchAppView('calendar')"><span class="tab-icon">️</span>Calendar</button>
       <button class="view-btn" onclick="switchAppView('analytics')"><span class="tab-icon">📈</span>Analytics</button>
     </div>
   </header>
 
-  <!-- 📅 ROUTINES TAB -->
+  <!--  ROUTINES TAB -->
   <div id="view-routines" class="view-container active">
     <div class="date-nav">
       <button class="nav-btn" onclick="navigateRoutine(-1)">‹</button>
@@ -351,7 +364,7 @@
     
     <div class="manage-bar">
       <button class="manage-btn" onclick="openAddModal()">➕ Add Routine</button>
-      <button class="manage-btn" onclick="exportAllData()">📤 Export</button>
+      <button class="manage-btn" onclick="exportAllData()"> Export</button>
       <button class="manage-btn" onclick="document.getElementById('import-file').click()">📥 Import</button>
       <input type="file" id="import-file" accept=".json" style="display:none" onchange="importAllData(this)">
       <button class="manage-btn danger" onclick="clearAllRoutines()">🧹 Clear</button>
@@ -369,16 +382,21 @@
     </div>
   </div>
 
-  <!-- 📋 TASKS TAB -->
+  <!-- 📋 TASKS TAB (PERSISTENT) -->
   <div id="view-tasks" class="view-container">
     <div class="date-nav">
-      <button class="nav-btn" onclick="navigateTask(-1)">‹</button>
-      <div id="task-date"></div>
-      <button class="nav-btn" onclick="navigateTask(1)">›</button>
+       <div id="task-date-display" style="font-weight:600; font-size:1.1rem;"> All Tasks</div>
+       <button class="nav-btn" onclick="goTaskToday()" title="Jump to Today">📅</button>
     </div>
-    <button id="today-btn" onclick="goTaskToday()">Today</button>
     
-    <div class="task-list" id="task-list"></div>
+    <!-- Toggle Completed -->
+    <div style="text-align:center; margin-bottom:12px;">
+      <button class="btn-suggest" id="toggle-completed-btn" onclick="toggleCompletedTasks()">Show Completed</button>
+    </div>
+
+    <div class="task-list" id="task-list">
+      <!-- Sections: Today, Overdue, Upcoming, Completed -->
+    </div>
     
     <!-- Task Quick Add with Save Button -->
     <div class="quick-add-container">
@@ -390,7 +408,7 @@
       <div class="input-row">
         <select id="task-quick-priority" style="flex:1;">
           <option value="1">🟡 Priority 1</option>
-          <option value="2" selected>🔵 Priority 2</option>
+          <option value="2" selected> Priority 2</option>
           <option value="3">⚪ Priority 3</option>
         </select>
       </div>
@@ -400,7 +418,7 @@
     </div>
   </div>
 
-  <!-- ️ CALENDAR TAB -->
+  <!-- 🗓️ CALENDAR TAB -->
   <div id="view-calendar" class="view-container">
     <div class="month-header">
       <button class="nav-btn" onclick="changeMonth(-1)">‹</button>
@@ -413,7 +431,7 @@
   <!-- 📈 ANALYTICS TAB -->
   <div id="view-analytics" class="view-container">
     <div class="analytics-header">
-      <h2 style="margin:0 0 20px; font-size:1.1rem;"> Routine Analytics</h2>
+      <h2 style="margin:0 0 20px; font-size:1.1rem;">📈 Routine Analytics</h2>
       <div class="overall-gauge">
         <svg class="gauge-svg" viewBox="0 0 120 120">
           <circle class="gauge-bg" cx="60" cy="60" r="50"/>
@@ -423,26 +441,26 @@
         <div class="gauge-label">Overall Routine Success</div>
       </div>
     </div>
-    <div class="chart-title" style="margin-bottom:12px;"> Routine Scores & Streaks</div>
+    <div class="chart-title" style="margin-bottom:12px;">Routine Scores & Streaks</div>
     <div id="habit-scores-list"></div>
     <div class="chart-section" style="margin-top:24px;">
       <div class="chart-title">📊 Percent Successful Days</div>
       <div id="bar-chart-container"></div>
     </div>
     <div class="chart-section">
-      <div class="chart-title"> Score Trend</div>
+      <div class="chart-title">Score Trend</div>
       <canvas id="trend-chart"></canvas>
     </div>
     <div class="chart-section">
-      <div class="chart-title">📊 Daily Completion (Last 30 Days)</div>
+      <div class="chart-title"> Daily Completion (Last 30 Days)</div>
       <canvas id="daily-progress-chart"></canvas>
     </div>
     <div class="yearly-totals">
-      <div class="chart-title"> Yearly Totals</div>
+      <div class="chart-title">Yearly Totals</div>
       <div id="yearly-totals-list"></div>
     </div>
     <div class="chart-section">
-      <div class="chart-title"> Weekly Progress Rings</div>
+      <div class="chart-title">Weekly Progress Rings</div>
       <div class="rings-container" id="rings-container"></div>
     </div>
     <div class="chart-section">
@@ -470,10 +488,10 @@
         <label class="form-label">Schedule</label>
         <select id="edit-schedule" class="form-input" onchange="toggleCustomSchedule()">
           <option value="daily">🔄 Daily</option>
-          <option value="today">📅 Today</option>
+          <option value="today"> Today</option>
           <option value="tomorrow">📆 Tomorrow</option>
           <option value="specific">📌 Specific</option>
-          <option value="custom"> Custom</option>
+          <option value="custom">Custom</option>
         </select>
       </div>
       <div class="form-group" id="date-specific-group" style="display:none;"><label class="form-label">Date</label><input type="date" id="edit-specific-date" class="form-input"></div>
@@ -500,10 +518,10 @@
   </div>
 
   <nav class="bottom-nav">
-    <div class="nav-item active" onclick="switchAppView('routines'); updateBottomNav(this)"><span class="nav-icon">📅</span><span>Routines</span></div>
+    <div class="nav-item active" onclick="switchAppView('routines'); updateBottomNav(this)"><span class="nav-icon"></span><span>Routines</span></div>
     <div class="nav-item" onclick="switchAppView('tasks'); updateBottomNav(this)"><span class="nav-icon">📋</span><span>Tasks</span></div>
-    <div class="nav-item" onclick="switchAppView('calendar'); updateBottomNav(this)"><span class="nav-icon">️</span><span>Calendar</span></div>
-    <div class="nav-item" onclick="switchAppView('analytics'); updateBottomNav(this)"><span class="nav-icon">📈</span><span>Analytics</span></div>
+    <div class="nav-item" onclick="switchAppView('calendar'); updateBottomNav(this)"><span class="nav-icon">🗓️</span><span>Calendar</span></div>
+    <div class="nav-item" onclick="switchAppView('analytics'); updateBottomNav(this)"><span class="nav-icon"></span><span>Analytics</span></div>
   </nav>
 
   <div class="toast" id="toast">✅ Updated</div>
@@ -522,15 +540,16 @@
     function forceSync(){ if(!db) return showToast('☁️ Sync not configured'); processSyncQueue(); showToast('☁️ Syncing...'); }
     function updateSyncStatus(s){ document.getElementById('sync-dot').className='sync-dot '+(s==='online'?'online':s==='syncing'?'syncing':''); document.getElementById('sync-text').textContent=s==='online'?'☁️ Synced':s==='syncing'?'☁️ Syncing...':'⚠️ Offline'; }
 
-    const ROUTINE_KEY='rt_routines', TASK_KEY='rt_tasks_v18', RECORDS_KEY='rt_records';
-    let routines=[], tasks=[], records={}, routineDate=new Date(), taskDate=new Date(), historyOpen=false, undoStack=[], editingRoutineId=null, calendarDate=new Date();
+    const ROUTINE_KEY='rt_routines', TASK_KEY='rt_tasks_v19', RECORDS_KEY='rt_records';
+    let routines=[], tasks=[], records={}, routineDate=new Date(), historyOpen=false, undoStack=[], editingRoutineId=null, calendarDate=new Date();
+    let showCompletedTasks = false;
 
     // === INITIALIZATION & MIGRATION ===
     function init(){
       loadRoutines(); loadTasks(); loadRecords();
       migrateHabitsToRoutines();
       
-      routineDate=new Date(); taskDate=new Date();
+      routineDate=new Date();
       renderAll();
       if('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
       if('Notification' in window && Notification.permission==='default') Notification.requestPermission();
@@ -539,11 +558,12 @@
         document.getElementById('date-specific-group').style.display=e.target.value==='specific'?'block':'none';
         toggleCustomSchedule();
       });
-      if(db) pullCloud();
       
       // Set default dates for quick add
       const today = getLocalDate(new Date());
       document.getElementById('task-quick-date').value = today;
+      
+      if(db) pullCloud();
       
       navigator.serviceWorker?.addEventListener('message', e => {
         if(e.data.action==='gotit') showToast('✅ Marked as done in background');
@@ -607,7 +627,7 @@
       if(view==='analytics') document.querySelectorAll('.nav-item')[3].classList.add('active');
 
       if(view==='routines') { renderRoutineDate(); renderRoutineView(); }
-      if(view==='tasks') { renderTaskDate(); renderTasks(); }
+      if(view==='tasks') { renderTasks(); }
       if(view==='calendar') renderMonthlyCalendar();
       if(view==='analytics') renderAdvancedAnalytics();
     }
@@ -617,14 +637,9 @@
     function renderRoutineDate(){
       document.getElementById('routine-date').textContent = formatDateDisplay(getLocalDate(routineDate));
     }
-    function renderTaskDate(){
-      document.getElementById('task-date').textContent = formatDateDisplay(getLocalDate(taskDate));
-      document.getElementById('task-quick-date').value = getLocalDate(taskDate);
-    }
     function navigateRoutine(dir){ routineDate.setDate(routineDate.getDate()+dir); renderRoutineDate(); renderRoutineView(); }
-    function navigateTask(dir){ taskDate.setDate(taskDate.getDate()+dir); renderTaskDate(); renderTasks(); }
     function goRoutineToday(){ routineDate=new Date(); renderRoutineDate(); renderRoutineView(); }
-    function goTaskToday(){ taskDate=new Date(); renderTaskDate(); renderTasks(); }
+    function goTaskToday(){ showToast('📅 Jumped to Today'); renderTasks(); }
     
     // === ROUTINE CRUD ===
     function pushUndo(){ undoStack.push(JSON.parse(JSON.stringify(routines))); if(undoStack.length>5) undoStack.shift(); document.getElementById('undo-btn').style.display='inline-flex'; }
@@ -691,28 +706,46 @@
       else { const idx=routines.findIndex(r=>r.id===editingRoutineId); if(idx!==-1) routines[idx]={...routines[idx], ...data}; }
       saveRoutines(); closeModal(); showToast('✅ Saved');
     }
-    function deleteRoutine(id){ if(!confirm('️ Delete?')) return; pushUndo(); routines=routines.filter(r=>r.id!==id); saveRoutines(); showToast('🗑️ Deleted'); }
+    function deleteRoutine(id){ if(!confirm('🗑️ Delete?')) return; pushUndo(); routines=routines.filter(r=>r.id!==id); saveRoutines(); showToast('🗑️ Deleted'); }
     function moveRoutine(id, dir){ pushUndo(); const idx=routines.findIndex(r=>r.id===id); const ni=idx+dir; if(ni<0||ni>=routines.length) return; [routines[idx],routines[ni]]=[routines[ni],routines[idx]]; saveRoutines(); }
-    function clearAllRoutines(){ if(!confirm('⚠️ Clear all routines?')) return; pushUndo(); routines=[]; saveRoutines(); showToast('🧹 Cleared'); }
-    function suggestTimes(){ const s=document.getElementById('edit-start'), e=document.getElementById('edit-end'); let pe='00:00'; if(editingRoutineId){ const idx=routines.findIndex(r=>r.id===editingRoutineId); if(idx>0 && routines[idx-1].end) pe=routines[idx-1].end; } else if(routines.length>0 && routines[routines.length-1].end) pe=routines[routines.length-1].end; if(pe==='00:00') return showToast('️ No prev routine'); const [h,m]=pe.split(':').map(Number); let nh=h, nm=m+15; if(nm>=60){nh++;nm-=60;} s.value=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`; e.value=`${String(nh).padStart(2,'0')}:${String(nm).padStart(2,'0')}`; showToast(' Suggested'); }
+    function clearAllRoutines(){ if(!confirm('⚠️ Clear all routines?')) return; pushUndo(); routines=[]; saveRoutines(); showToast(' Cleared'); }
+    function suggestTimes(){ const s=document.getElementById('edit-start'), e=document.getElementById('edit-end'); let pe='00:00'; if(editingRoutineId){ const idx=routines.findIndex(r=>r.id===editingRoutineId); if(idx>0 && routines[idx-1].end) pe=routines[idx-1].end; } else if(routines.length>0 && routines[routines.length-1].end) pe=routines[routines.length-1].end; if(pe==='00:00') return showToast('⚠️ No prev routine'); const [h,m]=pe.split(':').map(Number); let nh=h, nm=m+15; if(nm>=60){nh++;nm-=60;} s.value=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`; e.value=`${String(nh).padStart(2,'0')}:${String(nm).padStart(2,'0')}`; showToast('⚡ Suggested'); }
 
     function quickAddRoutine(){
-      const name=document.getElementById('routine-quick-name').value.trim(); if(!name) return showToast('️ Name required');
+      const name=document.getElementById('routine-quick-name').value.trim(); if(!name) return showToast('⚠️ Name required');
       const newRoutine = { id:'r_'+Date.now(), title:name, desc:'', goal:'', extraGoals:[], schedule:'daily', customDays:null, reward:'', start:'', end:'', specificDate:null, priority:false };
       routines.push(newRoutine); saveRoutines();
       document.getElementById('routine-quick-name').value=''; showToast('✅ Routine Added');
     }
 
-    // === TASK CRUD ===
+    // === TASK CRUD & PERSISTENCE ===
+    function toggleCompletedTasks(){
+      showCompletedTasks = !showCompletedTasks;
+      const btn = document.getElementById('toggle-completed-btn');
+      btn.textContent = showCompletedTasks ? 'Hide Completed' : 'Show Completed';
+      renderTasks();
+    }
+
     function quickAddTask(){
       const name=document.getElementById('task-quick-name').value.trim(); if(!name) return showToast('⚠️ Name required');
-      const newTask = { id:'t_'+Date.now(), type:'task', name, date:document.getElementById('task-quick-date').value, time:document.getElementById('task-quick-time').value, priority:parseInt(document.getElementById('task-quick-priority').value), completed:false };
+      const newTask = { 
+        id:'t_'+Date.now(), 
+        type:'task', 
+        name, 
+        date:document.getElementById('task-quick-date').value, 
+        time:document.getElementById('task-quick-time').value, 
+        priority:parseInt(document.getElementById('task-quick-priority').value), 
+        completed:false 
+      };
       tasks.push(newTask); saveTasks();
       document.getElementById('task-quick-name').value=''; showToast('✅ Task Saved');
       renderTasks();
     }
     function toggleTaskComplete(id){
-      const t=tasks.find(x=>x.id===id); if(!t) return; t.completed=!t.completed; if(t.completed){t.completedAt=Date.now(); t.status='Done';} else {delete t.completedAt; t.status='Pending';} saveTasks(); renderTasks();
+      const t=tasks.find(x=>x.id===id); if(!t) return; 
+      t.completed=!t.completed; 
+      if(t.completed){t.completedAt=Date.now(); t.status='Done';} else {delete t.completedAt; t.status='Pending';} 
+      saveTasks(); renderTasks();
     }
     function deleteTask(id){ if(!confirm('🗑️ Delete?')) return; tasks=tasks.filter(t=>t.id!==id); saveTasks(); renderTasks(); showToast('🗑️ Deleted'); }
 
@@ -720,7 +753,7 @@
     function getLocalDate(d=new Date()){ return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().split('T')[0]; }
     function formatDateDisplay(ds){ return new Date(ds+'T00:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}); }
     
-    function renderAll(){ renderRoutineDate(); renderRoutineView(); renderTaskDate(); renderTasks(); }
+    function renderAll(){ renderRoutineDate(); renderRoutineView(); renderTasks(); }
     
     function renderRoutineView(){
       const list=document.getElementById('routine-list'); const ds=getLocalDate(routineDate);
@@ -753,12 +786,12 @@
             <div class="routine-info">
               <div class="routine-header"><div class="routine-label">${r.title}</div>
               <div class="routine-controls" onclick="event.stopPropagation()">
-                <button class="ctrl-btn" onclick="moveRoutine('${r.id}',-1)" ${idx===0?'disabled':''}>️</button>
+                <button class="ctrl-btn" onclick="moveRoutine('${r.id}',-1)" ${idx===0?'disabled':''}>⬆️</button>
                 <button class="ctrl-btn" onclick="moveRoutine('${r.id}',1)" ${idx===todayR.length-1?'disabled':''}>⬇️</button>
                 <button class="ctrl-btn" onclick="openEditModal('${r.id}')">✏️</button>
-                <button class="ctrl-btn delete" onclick="deleteRoutine('${r.id}')">️</button>
+                <button class="ctrl-btn delete" onclick="deleteRoutine('${r.id}')">🗑️</button>
               </div></div>
-              <div class="routine-time"> ${ts} ${db}</div>
+              <div class="routine-time">⏰ ${ts} ${db}</div>
               ${r.desc?`<div class="routine-desc">${r.desc}</div>`:''}
               ${goalHtml}
               ${extraGoalsHtml}
@@ -771,26 +804,79 @@
     
     function toggleRoutine(id,ds){ if(!records[ds]) records[ds]={}; records[ds][id]=!records[ds][id]; saveRecords(); renderRoutineView(); if(navigator.vibrate) navigator.vibrate(20); }
     
+    // === PERSISTENT TASK RENDERING ===
     function renderTasks(){
-      const ds=getLocalDate(taskDate);
-      const filtered=tasks.filter(t=>t.date===ds);
-      const cont=document.getElementById('task-list');
-      if(filtered.length === 0) {
-        cont.innerHTML=`<div class="empty-state"><div style="font-size:3rem;margin-bottom:12px;">📝</div><div>No tasks for this day.</div></div>`;
-        return;
-      }
-      cont.innerHTML=filtered.map(t=>{
-        const pc=`p${t.priority}`, sb=t.completed?'<span style="font-size:0.7rem;color:var(--success);font-weight:600;">✅ Done</span>':'<span style="font-size:0.7rem;color:var(--sub);font-weight:600;">⏳ Pending</span>';
-        return `<div class="task-card ${t.completed?'completed':''}" data-id="${t.id}">
+      const container=document.getElementById('task-list');
+      const todayStr = getLocalDate(new Date());
+      
+      let todayTasks=[], overdueTasks=[], upcomingTasks=[], completedTasks=[];
+      
+      tasks.forEach(t => {
+        if(t.completed) {
+          completedTasks.push(t);
+        } else {
+          if(t.date === todayStr) todayTasks.push(t);
+          else if(t.date < todayStr) overdueTasks.push(t);
+          else upcomingTasks.push(t);
+        }
+      });
+      
+      // Sort upcoming by date
+      upcomingTasks.sort((a,b) => a.date.localeCompare(b.date));
+      overdueTasks.sort((a,b) => a.date.localeCompare(b.date)); // Oldest first
+      
+      let html = '';
+      
+      // Helper to render a single task
+      const renderTaskCard = (t, isOverdue, isToday) => {
+        const pc=`p${t.priority}`; 
+        const overdueBadge = isOverdue ? `<span class="task-date-badge overdue">⚠️ Overdue</span>` : '';
+        const todayBadge = isToday ? `<span class="task-date-badge today">⚡ Today</span>` : '';
+        const dateDisplay = `${formatDateDisplay(t.date)}`;
+        
+        return `<div class="task-card ${t.completed?'completed':''} ${isOverdue?'overdue':''} ${isToday?'today':''}" data-id="${t.id}">
           <div class="check-overlay"><span>✅</span></div>
           <div class="task-checkbox ${t.completed?'checked':''}" onclick="toggleTaskComplete('${t.id}')"></div>
           <div class="task-content">
-            <div class="task-header"><div class="task-title"><span class="cat-icon">📋</span> ${t.name}</div>${sb}</div>
-            <div class="task-meta"><span>⏰ ${t.time||'No time'}</span><span class="prio-badge ${pc}"><span class="prio-flag"></span>${t.priority}</span></div>
-            <div class="task-actions"><button class="task-delete" onclick="deleteTask('${t.id}')">🗑️</button></div>
+            <div class="task-header"><div class="task-title"><span class="cat-icon">📋</span> ${t.name}</div>
+            ${t.completed?'<span style="font-size:0.7rem;color:var(--success);font-weight:600;">✅ Done</span>':`${overdueBadge}${todayBadge}`}
+            </div>
+            <div class="task-meta">
+              <span class="task-date-badge">${dateDisplay}</span>
+              ${t.time?`<span>⏰ ${t.time}</span>`:''}
+              <span class="prio-badge ${pc}"><span class="prio-flag"></span>${t.priority}</span>
+            </div>
+            <div class="task-actions"><button class="task-delete" onclick="deleteTask('${t.id}')">️</button></div>
           </div>
         </div>`;
-      }).join('');
+      };
+
+      if(todayTasks.length) {
+        html += `<div class="section-header">⚡ Today</div>`;
+        html += todayTasks.map(t => renderTaskCard(t, false, true)).join('');
+      }
+      
+      if(overdueTasks.length) {
+        html += `<div class="section-header">🔥 Overdue</div>`;
+        html += overdueTasks.map(t => renderTaskCard(t, true, false)).join('');
+      }
+      
+      if(upcomingTasks.length) {
+        html += `<div class="section-header">📅 Upcoming</div>`;
+        html += upcomingTasks.map(t => renderTaskCard(t, false, false)).join('');
+      }
+      
+      if(todayTasks.length === 0 && overdueTasks.length === 0 && upcomingTasks.length === 0) {
+        html += `<div class="empty-state"><div style="font-size:3rem;margin-bottom:12px;">📝</div><div>No active tasks.</div></div>`;
+      }
+
+      // Completed Section
+      if(showCompletedTasks && completedTasks.length > 0) {
+        html += `<div class="section-header">✅ Completed</div>`;
+        html += completedTasks.map(t => renderTaskCard(t, false, false)).join('');
+      }
+      
+      container.innerHTML = html;
     }
     
     // === CALENDAR & ANALYTICS (UNCHANGED LOGIC) ===
@@ -836,7 +922,7 @@
         return `<div class="habit-score-card">
           <svg class="score-ring" viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="24"/><circle class="fill" cx="28" cy="28" r="24" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="14" font-weight="bold" fill="var(--text)">${score}</text></svg>
           <div class="score-info"><div class="score-title">${r.title}</div>
-          <div class="score-metrics"><div class="metric"> <strong>${streak}d</strong></div><div class="metric"> <strong>${maxStreak}d</strong></div><div class="metric">✅ <strong>${success}%</strong></div></div>
+          <div class="score-metrics"><div class="metric">🔥 <strong>${streak}d</strong></div><div class="metric">🏆 <strong>${maxStreak}d</strong></div><div class="metric">✅ <strong>${success}%</strong></div></div>
           <div class="score-bar"><div class="score-bar-fill" style="width:${success}%"></div></div></div>
         </div>`;
       }).join('');
@@ -879,10 +965,10 @@
     function renderMilestones(){
       const grid=document.getElementById('milestones-grid'); let milestones=[];
       routines.forEach(r=>{ const streak=calcRoutineStreak(r); const maxStreak=calcRoutineMaxStreak(r); const success=calcRoutineSuccessRate(r);
-        if(maxStreak>=7) milestones.push({icon:'', title:`${r.title}`, desc:`${maxStreak} Day Streak`});
-        if(maxStreak>=30) milestones.push({icon:'', title:`${r.title}`, desc:`${maxStreak} Day Streak`});
-        if(maxStreak>=100) milestones.push({icon:'', title:`${r.title}`, desc:`${maxStreak} Day Streak`});
-        if(success===100 && streak>=30) milestones.push({icon:'💯', title:`${r.title}`, desc:`Perfect Score`});
+        if(maxStreak>=7) milestones.push({icon:'🥉', title:`${r.title}`, desc:`${maxStreak} Day Streak`});
+        if(maxStreak>=30) milestones.push({icon:'🥈', title:`${r.title}`, desc:`${maxStreak} Day Streak`});
+        if(maxStreak>=100) milestones.push({icon:'🥇', title:`${r.title}`, desc:`${maxStreak} Day Streak`});
+        if(success===100 && streak>=30) milestones.push({icon:'', title:`${r.title}`, desc:`Perfect Score`});
       });
       if(!milestones.length){ grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--sub);padding:20px">Keep going to unlock milestones!</div>'; return; }
       grid.innerHTML=milestones.slice(0,6).map(m=>`<div class="milestone-item"><div class="trophy">${m.icon}</div><div class="milestone-title">${m.title}</div><div class="milestone-desc">${m.desc}</div></div>`).join('');
@@ -897,7 +983,7 @@
     }
 
     function exportAllData(){ const data={routines, tasks, records, exportedAt:new Date().toISOString()}; const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`routine-tracker-backup-${getLocalDate()}.json`; document.body.appendChild(a); a.click(); a.remove(); showToast('📤 Exported All Data'); }
-    function importAllData(input){ const file=input.files[0]; if(!file) return; if(!confirm('⚠️ Overwrite all data?')) { input.value=''; return; } const reader=new FileReader(); reader.onload=e=>{ try{ const data=JSON.parse(e.target.result); if(data.routines) routines=data.routines; if(data.tasks) tasks=data.tasks; if(data.records) records=data.records; saveRoutines(); saveTasks(); saveRecords(); showToast(' Imported Successfully'); }catch(err){ showToast('❌ Invalid File'); } }; reader.readAsText(file); input.value=''; }
+    function importAllData(input){ const file=input.files[0]; if(!file) return; if(!confirm('⚠️ Overwrite all data?')) { input.value=''; return; } const reader=new FileReader(); reader.onload=e=>{ try{ const data=JSON.parse(e.target.result); if(data.routines) routines=data.routines; if(data.tasks) tasks=data.tasks; if(data.records) records=data.records; saveRoutines(); saveTasks(); saveRecords(); showToast('📥 Imported Successfully'); }catch(err){ showToast('❌ Invalid File'); } }; reader.readAsText(file); input.value=''; }
     function addExtraGoalToModal(){ const container = document.getElementById('extra-goals-container-modal'); container.innerHTML+=`<div class="extra-goal-item"><input type="text" placeholder="Extra goal..."><button class="extra-goal-remove" onclick="this.parentElement.remove()">✕</button></div>`; }
 
     function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1500); }
