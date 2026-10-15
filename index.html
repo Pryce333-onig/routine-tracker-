@@ -32,7 +32,6 @@
     .sync-dot.syncing { background:var(--primary); animation:pulse 1s infinite; }
     @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
     
-    /* 4 TABS VIEW SWITCHER */
     .view-switcher { display:flex; gap:6px; margin-bottom:16px; background:var(--card); padding:6px; border-radius:14px; box-shadow:0 1px 3px rgba(0,0,0,0.05); }
     .view-btn { flex:1; padding:10px 4px; text-align:center; border-radius:10px; cursor:pointer; font-weight:600; font-size:0.75rem; color:var(--sub); transition:0.2s; border:none; background:none; display:flex; flex-direction:column; align-items:center; gap:4px; }
     .view-btn.active { background:var(--primary); color:#fff; }
@@ -54,6 +53,19 @@
     .routine-card.priority { background: var(--highlight-bg); border-left-color: var(--highlight-border); box-shadow: 0 2px 10px rgba(245, 158, 11, 0.2); }
     .routine-card.completed { border-left-color:var(--success); background:#f0fdf4; }
     .routine-card:active { transform:scale(0.99); }
+    
+    /* HIGHLIGHT GLOW EFFECT */
+    .routine-card.highlighted {
+      border-left-color: var(--pending) !important;
+      background: var(--overdue-bg) !important;
+      box-shadow: 0 0 12px var(--pending) !important;
+      animation: highlightPulse 2s infinite;
+    }
+    @keyframes highlightPulse {
+      0% { box-shadow: 0 0 8px var(--pending); }
+      50% { box-shadow: 0 0 16px var(--pending); }
+      100% { box-shadow: 0 0 8px var(--pending); }
+    }
     
     .check-box { width:24px; height:24px; border:2px solid var(--pending); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:14px; color:transparent; flex-shrink:0; transition:all 0.2s; }
     .routine-card.completed .check-box { background:var(--success); border-color:var(--success); color:#fff; }
@@ -138,11 +150,9 @@
     
     .empty-state { text-align:center; padding:40px 20px; color:var(--sub); }
     
-    /* QUICK ADD FORMS */
     .quick-add-container { background:var(--card); border-radius:var(--radius); padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.05); margin-bottom:16px; }
     .sticky-submit { position: sticky; bottom: 0; background: var(--card); padding-top: 12px; margin-top: 12px; border-top: 1px solid var(--border); z-index: 10; }
     
-    /* HABITS & STATS */
     .habits-grid { display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:20px; }
     .habit-stat-card { background:var(--card); border-radius:var(--radius); padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.05); }
     .habit-stat-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
@@ -210,7 +220,6 @@
     .legend-item { display:flex; align-items:center; gap:6px; font-size:0.8rem; color:var(--sub); }
     .legend-dot { width:10px; height:10px; border-radius:50%; }
 
-    /* ANALYTICS STYLES */
     .analytics-header { margin-bottom:20px; }
     .overall-gauge { display:flex; flex-direction:column; align-items:center; margin-bottom:24px; }
     .gauge-svg { width:120px; height:120px; transform:rotate(-90deg); }
@@ -249,7 +258,6 @@
     .total-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); }
     .total-row:last-child { border:none; }
 
-    /* SECTION 16: ALARMS STYLES */
     .alarm-list { margin-top:8px; background:var(--bg); border-radius:8px; padding:8px; }
     .alarm-item { display:flex; align-items:center; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border); }
     .alarm-item:last-child { border:none; }
@@ -257,13 +265,11 @@
     .alarm-remove { width:24px; height:24px; border-radius:50%; border:none; background:var(--pending); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.8rem; }
     .alarm-badge { background:var(--highlight-bg); color:var(--highlight-border); padding:2px 6px; border-radius:12px; font-size:0.75rem; font-weight:600; margin-left:6px; }
     
-    /* EXTRA GOALS */
     .extra-goals { margin-top:8px; background:var(--bg); border-radius:8px; padding:8px; }
     .extra-goal-item { display:flex; gap:8px; margin-bottom:6px; }
     .extra-goal-item input { flex:1; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--card); color:var(--text); font-size:0.85rem; }
     .extra-goal-remove { width:28px; height:28px; border-radius:6px; border:none; background:var(--pending); color:#fff; cursor:pointer; }
     
-    /* CUSTOM SCHEDULE STYLES */
     .custom-schedule-options { margin-top:10px; padding:12px; background:var(--bg); border-radius:10px; display:none; }
     .custom-schedule-options.visible { display:block; }
     .day-checkboxes { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
@@ -275,12 +281,10 @@
     .preset-btn { flex:1; min-width:80px; padding:8px; background:var(--card); border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:0.8rem; transition:0.2s; }
     .preset-btn:hover { background:var(--primary); color:#fff; border-color:var(--primary); }
 
-    /* SECTION 17: NEW GOAL DISPLAY STYLES */
     .routine-goal { font-size:0.8rem; color:var(--primary); margin-top:4px; font-weight:600; }
     .routine-extra-goals { display:flex; flex-wrap:wrap; gap:4px; margin-top:6px; }
     .extra-goal-badge { font-size:0.7rem; background:var(--bg); padding:2px 6px; border-radius:4px; color:var(--sub); }
 
-    /* SECTION 18: TASK PERSISTENCE STYLES */
     .task-date-badge { font-size:0.7rem; padding:2px 6px; border-radius:12px; background:var(--bg); font-weight:600; }
     .task-date-badge.overdue { background:var(--overdue-bg); color:var(--overdue-text); }
     .task-date-badge.today { background:var(--today-bg); color:var(--today-text); }
@@ -301,6 +305,7 @@
       .routine-card { box-shadow:0 1px 3px rgba(0,0,0,0.2); }
       .routine-card.completed { background:#0f291e; }
       .routine-card.priority { background:#422006; border-left-color:#d97706; }
+      .routine-card.highlighted { background:#3b1111 !important; }
       .toast { background:#f1f5f9; color:#0d0d0d; }
       .input-full, .input-row input, .input-row select, .form-input { background:#111; border-color:#333; }
       .modal-content { background:#1a1a1a; }
@@ -339,16 +344,14 @@
       <div class="sync-dot" id="sync-dot"></div>
       <span id="sync-text">Offline</span>
     </div>
-    <!-- 4 TABS -->
     <div class="view-switcher">
       <button class="view-btn active" onclick="switchAppView('routines')"><span class="tab-icon">📅</span>Routines</button>
       <button class="view-btn" onclick="switchAppView('tasks')"><span class="tab-icon">📋</span>Tasks</button>
-      <button class="view-btn" onclick="switchAppView('calendar')"><span class="tab-icon">️</span>Calendar</button>
+      <button class="view-btn" onclick="switchAppView('calendar')"><span class="tab-icon">🗓️</span>Calendar</button>
       <button class="view-btn" onclick="switchAppView('analytics')"><span class="tab-icon">📈</span>Analytics</button>
     </div>
   </header>
 
-  <!--  ROUTINES TAB -->
   <div id="view-routines" class="view-container active">
     <div class="date-nav">
       <button class="nav-btn" onclick="navigateRoutine(-1)">‹</button>
@@ -364,16 +367,15 @@
     
     <div class="manage-bar">
       <button class="manage-btn" onclick="openAddModal()">➕ Add Routine</button>
-      <button class="manage-btn" onclick="exportAllData()"> Export</button>
-      <button class="manage-btn" onclick="document.getElementById('import-file').click()">📥 Import</button>
+      <button class="manage-btn" onclick="exportAllData()">📤 Export</button>
+      <button class="manage-btn" onclick="document.getElementById('import-file').click()"> Import</button>
       <input type="file" id="import-file" accept=".json" style="display:none" onchange="importAllData(this)">
       <button class="manage-btn danger" onclick="clearAllRoutines()">🧹 Clear</button>
-      <button class="manage-btn" id="undo-btn" style="display:none;" onclick="undoAction()">↩️ Undo</button>
+      <button class="manage-btn" id="undo-btn" style="display:none;" onclick="undoAction()">️ Undo</button>
     </div>
     
     <div class="routine-list" id="routine-list"></div>
     
-    <!-- Routine Quick Add -->
     <div class="quick-add-container">
       <input type="text" id="routine-quick-name" class="input-full" placeholder="New Routine Name..." inputmode="text" enterkeyhint="add">
       <div class="sticky-submit">
@@ -382,23 +384,15 @@
     </div>
   </div>
 
-  <!-- 📋 TASKS TAB (PERSISTENT) -->
   <div id="view-tasks" class="view-container">
     <div class="date-nav">
        <div id="task-date-display" style="font-weight:600; font-size:1.1rem;"> All Tasks</div>
        <button class="nav-btn" onclick="goTaskToday()" title="Jump to Today">📅</button>
     </div>
-    
-    <!-- Toggle Completed -->
     <div style="text-align:center; margin-bottom:12px;">
       <button class="btn-suggest" id="toggle-completed-btn" onclick="toggleCompletedTasks()">Show Completed</button>
     </div>
-
-    <div class="task-list" id="task-list">
-      <!-- Sections: Today, Overdue, Upcoming, Completed -->
-    </div>
-    
-    <!-- Task Quick Add with Save Button -->
+    <div class="task-list" id="task-list"></div>
     <div class="quick-add-container">
       <input type="text" id="task-quick-name" class="input-full" placeholder="New Task Name..." inputmode="text" enterkeyhint="add">
       <div class="input-row" style="margin-top:10px;">
@@ -408,7 +402,7 @@
       <div class="input-row">
         <select id="task-quick-priority" style="flex:1;">
           <option value="1">🟡 Priority 1</option>
-          <option value="2" selected> Priority 2</option>
+          <option value="2" selected>🔵 Priority 2</option>
           <option value="3">⚪ Priority 3</option>
         </select>
       </div>
@@ -418,7 +412,6 @@
     </div>
   </div>
 
-  <!-- 🗓️ CALENDAR TAB -->
   <div id="view-calendar" class="view-container">
     <div class="month-header">
       <button class="nav-btn" onclick="changeMonth(-1)">‹</button>
@@ -428,7 +421,6 @@
     <div class="month-grid" id="month-grid"></div>
   </div>
 
-  <!-- 📈 ANALYTICS TAB -->
   <div id="view-analytics" class="view-container">
     <div class="analytics-header">
       <h2 style="margin:0 0 20px; font-size:1.1rem;">📈 Routine Analytics</h2>
@@ -471,10 +463,9 @@
     <div class="milestones-grid" id="milestones-grid"></div>
   </div>
 
-  <!-- ROUTINE EDIT MODAL -->
   <div class="modal-overlay" id="edit-modal">
     <div class="modal-content">
-      <div class="modal-header"><div class="modal-title" id="modal-title">Edit Routine</div><button class="modal-close" onclick="closeModal()"></button></div>
+      <div class="modal-header"><div class="modal-title" id="modal-title">Edit Routine</div><button class="modal-close" onclick="closeModal()">✕</button></div>
       <div class="form-group"><label class="form-label">Routine Name</label><input type="text" id="edit-title" class="form-input"></div>
       <div class="form-group"><label class="form-label">Description</label><input type="text" id="edit-desc" class="form-input"></div>
       <div class="form-group"><label class="form-label">Goal</label><input type="text" id="edit-goal" class="form-input" placeholder="e.g., 3 miles"></div>
@@ -488,7 +479,7 @@
         <label class="form-label">Schedule</label>
         <select id="edit-schedule" class="form-input" onchange="toggleCustomSchedule()">
           <option value="daily">🔄 Daily</option>
-          <option value="today"> Today</option>
+          <option value="today">📅 Today</option>
           <option value="tomorrow">📆 Tomorrow</option>
           <option value="specific">📌 Specific</option>
           <option value="custom">Custom</option>
@@ -518,16 +509,15 @@
   </div>
 
   <nav class="bottom-nav">
-    <div class="nav-item active" onclick="switchAppView('routines'); updateBottomNav(this)"><span class="nav-icon"></span><span>Routines</span></div>
+    <div class="nav-item active" onclick="switchAppView('routines'); updateBottomNav(this)"><span class="nav-icon">📅</span><span>Routines</span></div>
     <div class="nav-item" onclick="switchAppView('tasks'); updateBottomNav(this)"><span class="nav-icon">📋</span><span>Tasks</span></div>
     <div class="nav-item" onclick="switchAppView('calendar'); updateBottomNav(this)"><span class="nav-icon">🗓️</span><span>Calendar</span></div>
-    <div class="nav-item" onclick="switchAppView('analytics'); updateBottomNav(this)"><span class="nav-icon"></span><span>Analytics</span></div>
+    <div class="nav-item" onclick="switchAppView('analytics'); updateBottomNav(this)"><span class="nav-icon">📈</span><span>Analytics</span></div>
   </nav>
 
   <div class="toast" id="toast">✅ Updated</div>
 
   <script>
-    // === FIREBASE & STATE ===
     const firebaseConfig = { apiKey: "AIzaSyDummyKey", authDomain: "demo.firebaseapp.com", projectId: "demo", storageBucket: "demo.appspot.com", messagingSenderId: "123", appId: "1:123:web:abc" };
     let db, userId = localStorage.getItem('rt_userId') || 'user_' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('rt_userId', userId);
@@ -538,15 +528,20 @@
     function queueSync(c,d,data){ syncQueue.push({c,d,data,t:Date.now()}); if(isOnline) processSyncQueue(); }
     async function processSyncQueue(){ if(!db||!syncQueue.length) return; try{ for(const i of syncQueue) await db.collection(i.c).doc(i.d).set(i.data,{merge:true}); syncQueue=[]; }catch(e){} }
     function forceSync(){ if(!db) return showToast('☁️ Sync not configured'); processSyncQueue(); showToast('☁️ Syncing...'); }
-    function updateSyncStatus(s){ document.getElementById('sync-dot').className='sync-dot '+(s==='online'?'online':s==='syncing'?'syncing':''); document.getElementById('sync-text').textContent=s==='online'?'☁️ Synced':s==='syncing'?'☁️ Syncing...':'⚠️ Offline'; }
+    function updateSyncStatus(s){ document.getElementById('sync-dot').className='sync-dot '+(s==='online'?'online':s==='syncing'?'syncing':''); document.getElementById('sync-text').textContent=s==='online'?'☁️ Synced':s==='syncing'?'☁️ Syncing...':'️ Offline'; }
 
-    const ROUTINE_KEY='rt_routines', TASK_KEY='rt_tasks_v19', RECORDS_KEY='rt_records';
+    const ROUTINE_KEY='rt_routines', TASK_KEY='rt_tasks_v19', RECORDS_KEY='rt_records', HIGHLIGHTS_KEY='rt_highlights';
     let routines=[], tasks=[], records={}, routineDate=new Date(), historyOpen=false, undoStack=[], editingRoutineId=null, calendarDate=new Date();
     let showCompletedTasks = false;
+    let highlights = {}; // Stores highlights per date: { "2024-07-25": ["r_123", "r_456"] }
+    
+    // Tap handling state
+    let tapTimeout = null;
+    let lastTapId = null;
+    let lastTapDs = null;
 
-    // === INITIALIZATION & MIGRATION ===
     function init(){
-      loadRoutines(); loadTasks(); loadRecords();
+      loadRoutines(); loadTasks(); loadRecords(); loadHighlights();
       migrateHabitsToRoutines();
       
       routineDate=new Date();
@@ -559,7 +554,6 @@
         toggleCustomSchedule();
       });
       
-      // Set default dates for quick add
       const today = getLocalDate(new Date());
       document.getElementById('task-quick-date').value = today;
       
@@ -571,34 +565,35 @@
       });
     }
 
+    function loadHighlights(){
+      try { highlights = JSON.parse(localStorage.getItem(HIGHLIGHTS_KEY)) || {}; } catch(e) { highlights = {}; }
+    }
+    function saveHighlights(){
+      localStorage.setItem(HIGHLIGHTS_KEY, JSON.stringify(highlights));
+    }
+
     function migrateHabitsToRoutines(){
       const habitTasks = tasks.filter(t => t.type === 'habit' || t.type === 'habit_legacy');
       if(habitTasks.length === 0) return;
-
       habitTasks.forEach(habit => {
         const oldId = habit.id;
         const newId = 'r_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
         const newRoutine = {
-          id: newId,
-          title: habit.name || habit.title || 'Migrated Habit',
-          desc: habit.desc || '',
-          schedule: 'custom',
-          customDays: habit.frequency || habit.customDays || ['1','2','3','4','5'],
-          goal: habit.goal || '',
-          extraGoals: habit.extraGoals || [],
-          reward: '',
-          start: habit.start || '',
-          end: habit.end || '',
-          priority: false,
-          specificDate: null
+          id: newId, title: habit.name || habit.title || 'Migrated Habit', desc: habit.desc || '',
+          schedule: 'custom', customDays: habit.frequency || habit.customDays || ['1','2','3','4','5'],
+          goal: habit.goal || '', extraGoals: habit.extraGoals || [], reward: '',
+          start: habit.start || '', end: habit.end || '', priority: false, specificDate: null
         };
         routines.push(newRoutine);
         for (const date in records) {
-          if (records[date][oldId]) {
-            records[date][newId] = records[date][oldId];
-            delete records[date][oldId];
-          }
+          if (records[date][oldId]) { records[date][newId] = records[date][oldId]; delete records[date][oldId]; }
         }
+        // Migrate highlights if any
+        for(const ds in highlights){
+          const idx = highlights[ds].indexOf(oldId);
+          if(idx > -1) highlights[ds][idx] = newId;
+        }
+        saveHighlights();
       });
       tasks = tasks.filter(t => t.type !== 'habit' && t.type !== 'habit_legacy');
       saveRoutines(); saveTasks(); saveRecords();
@@ -613,19 +608,16 @@
     function loadRecords(){ try{ records=JSON.parse(localStorage.getItem(RECORDS_KEY))||{}; }catch(e){records={};} }
     function saveRecords(){ localStorage.setItem(RECORDS_KEY,JSON.stringify(records)); if(db) queueSync('users',userId,{records,updatedAt:new Date().toISOString()}); }
 
-    // === VIEW SWITCHING ===
     function switchAppView(view){
       document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active'));
       document.querySelectorAll('.view-container').forEach(v=>v.classList.remove('active'));
       document.querySelector(`.view-btn[onclick="switchAppView('${view}')"]`).classList.add('active');
       document.getElementById(`view-${view}`).classList.add('active');
-      
       document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
       if(view==='routines') document.querySelectorAll('.nav-item')[0].classList.add('active');
       if(view==='tasks') document.querySelectorAll('.nav-item')[1].classList.add('active');
       if(view==='calendar') document.querySelectorAll('.nav-item')[2].classList.add('active');
       if(view==='analytics') document.querySelectorAll('.nav-item')[3].classList.add('active');
-
       if(view==='routines') { renderRoutineDate(); renderRoutineView(); }
       if(view==='tasks') { renderTasks(); }
       if(view==='calendar') renderMonthlyCalendar();
@@ -633,15 +625,11 @@
     }
     function updateBottomNav(el){}
 
-    // === DATE NAVIGATION ===
-    function renderRoutineDate(){
-      document.getElementById('routine-date').textContent = formatDateDisplay(getLocalDate(routineDate));
-    }
+    function renderRoutineDate(){ document.getElementById('routine-date').textContent = formatDateDisplay(getLocalDate(routineDate)); }
     function navigateRoutine(dir){ routineDate.setDate(routineDate.getDate()+dir); renderRoutineDate(); renderRoutineView(); }
     function goRoutineToday(){ routineDate=new Date(); renderRoutineDate(); renderRoutineView(); }
     function goTaskToday(){ showToast('📅 Jumped to Today'); renderTasks(); }
     
-    // === ROUTINE CRUD ===
     function pushUndo(){ undoStack.push(JSON.parse(JSON.stringify(routines))); if(undoStack.length>5) undoStack.shift(); document.getElementById('undo-btn').style.display='inline-flex'; }
     function undoAction(){ if(!undoStack.length) return; routines=undoStack.pop(); saveRoutines(); showToast('↩️ Undone'); if(!undoStack.length) document.getElementById('undo-btn').style.display='none'; }
     
@@ -667,17 +655,13 @@
       document.getElementById('edit-goal').value=r.goal||'';
       document.getElementById('date-specific-group').style.display=r.schedule==='specific'?'block':'none'; 
       if(r.schedule==='specific') document.getElementById('edit-specific-date').value=r.specificDate||'';
-      
       const egc=document.getElementById('extra-goals-container-modal'); egc.innerHTML='';
       if(r.extraGoals && r.extraGoals.length) r.extraGoals.forEach(g=>{
           const div=document.createElement('div'); div.className='extra-goal-item'; div.innerHTML=`<input type="text" value="${g}"><button class="extra-goal-remove" onclick="this.parentElement.remove()">✕</button>`; egc.appendChild(div);
       });
-
       if(r.schedule==='custom' && r.customDays){
         document.getElementById('custom-schedule-options').classList.add('visible');
-        for(let i=0;i<7;i++){
-          document.getElementById(`edit-day-${i}`).checked=r.customDays.includes(i.toString());
-        }
+        for(let i=0;i<7;i++){ document.getElementById(`edit-day-${i}`).checked=r.customDays.includes(i.toString()); }
       } else { document.getElementById('custom-schedule-options').classList.remove('visible'); }
       document.getElementById('edit-modal').classList.add('active'); 
     }
@@ -695,7 +679,7 @@
     function getSelectedCustomDays(){ const days=[]; for(let i=0;i<7;i++){ if(document.getElementById(`edit-day-${i}`).checked){ days.push(i.toString()); } } return days; }
     
     function saveRoutine(){
-      const title=document.getElementById('edit-title').value.trim(); if(!title) return showToast('⚠️ Name required');
+      const title=document.getElementById('edit-title').value.trim(); if(!title) return showToast('️ Name required');
       pushUndo();
       const schedule=document.getElementById('edit-schedule').value;
       let customDays=null;
@@ -706,7 +690,22 @@
       else { const idx=routines.findIndex(r=>r.id===editingRoutineId); if(idx!==-1) routines[idx]={...routines[idx], ...data}; }
       saveRoutines(); closeModal(); showToast('✅ Saved');
     }
-    function deleteRoutine(id){ if(!confirm('🗑️ Delete?')) return; pushUndo(); routines=routines.filter(r=>r.id!==id); saveRoutines(); showToast('🗑️ Deleted'); }
+
+    function deleteRoutine(id){ 
+      if(!confirm('🗑️ Delete?')) return; 
+      pushUndo(); 
+      routines=routines.filter(r=>r.id!==id); 
+      // Cleanup highlights
+      for(const ds in highlights){
+        const idx = highlights[ds].indexOf(id);
+        if(idx > -1) highlights[ds].splice(idx, 1);
+        if(highlights[ds].length === 0) delete highlights[ds];
+      }
+      saveHighlights();
+      saveRoutines(); 
+      showToast('🗑️ Deleted'); 
+    }
+
     function moveRoutine(id, dir){ pushUndo(); const idx=routines.findIndex(r=>r.id===id); const ni=idx+dir; if(ni<0||ni>=routines.length) return; [routines[idx],routines[ni]]=[routines[ni],routines[idx]]; saveRoutines(); }
     function clearAllRoutines(){ if(!confirm('⚠️ Clear all routines?')) return; pushUndo(); routines=[]; saveRoutines(); showToast(' Cleared'); }
     function suggestTimes(){ const s=document.getElementById('edit-start'), e=document.getElementById('edit-end'); let pe='00:00'; if(editingRoutineId){ const idx=routines.findIndex(r=>r.id===editingRoutineId); if(idx>0 && routines[idx-1].end) pe=routines[idx-1].end; } else if(routines.length>0 && routines[routines.length-1].end) pe=routines[routines.length-1].end; if(pe==='00:00') return showToast('⚠️ No prev routine'); const [h,m]=pe.split(':').map(Number); let nh=h, nm=m+15; if(nm>=60){nh++;nm-=60;} s.value=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`; e.value=`${String(nh).padStart(2,'0')}:${String(nm).padStart(2,'0')}`; showToast('⚡ Suggested'); }
@@ -725,18 +724,9 @@
       btn.textContent = showCompletedTasks ? 'Hide Completed' : 'Show Completed';
       renderTasks();
     }
-
     function quickAddTask(){
       const name=document.getElementById('task-quick-name').value.trim(); if(!name) return showToast('⚠️ Name required');
-      const newTask = { 
-        id:'t_'+Date.now(), 
-        type:'task', 
-        name, 
-        date:document.getElementById('task-quick-date').value, 
-        time:document.getElementById('task-quick-time').value, 
-        priority:parseInt(document.getElementById('task-quick-priority').value), 
-        completed:false 
-      };
+      const newTask = { id:'t_'+Date.now(), type:'task', name, date:document.getElementById('task-quick-date').value, time:document.getElementById('task-quick-time').value, priority:parseInt(document.getElementById('task-quick-priority').value), completed:false };
       tasks.push(newTask); saveTasks();
       document.getElementById('task-quick-name').value=''; showToast('✅ Task Saved');
       renderTasks();
@@ -748,6 +738,40 @@
       saveTasks(); renderTasks();
     }
     function deleteTask(id){ if(!confirm('🗑️ Delete?')) return; tasks=tasks.filter(t=>t.id!==id); saveTasks(); renderTasks(); showToast('🗑️ Deleted'); }
+
+    // === HIGHLIGHT LOGIC ===
+    function toggleHighlight(routineId, dateStr) {
+      if (!highlights[dateStr]) highlights[dateStr] = [];
+      const idx = highlights[dateStr].indexOf(routineId);
+      if (idx > -1) {
+        highlights[dateStr].splice(idx, 1);
+        showToast('🔴 Highlight removed');
+      } else {
+        if (highlights[dateStr].length >= 3) {
+          showToast('⚠️ Maximum 3 highlights per day');
+          return;
+        }
+        highlights[dateStr].push(routineId);
+        showToast('🔴 Highlighted');
+      }
+      saveHighlights();
+      renderRoutineView();
+    }
+
+    function handleRoutineTap(id, ds) {
+      if (tapTimeout && lastTapId === id && lastTapDs === ds) {
+        clearTimeout(tapTimeout);
+        tapTimeout = null;
+        toggleHighlight(id, ds); // Double tap
+      } else {
+        lastTapId = id;
+        lastTapDs = ds;
+        tapTimeout = setTimeout(() => {
+          tapTimeout = null;
+          toggleRoutine(id, ds); // Single tap
+        }, 250);
+      }
+    }
 
     // === RENDERING ===
     function getLocalDate(d=new Date()){ return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().split('T')[0]; }
@@ -779,9 +803,11 @@
         list.innerHTML=todayR.map((r,idx)=>{ 
           const done=records[ds]?.[r.id]; const ts=(r.start&&r.end)?`${r.start} - ${r.end}`:(r.start||r.end||'Flexible'); 
           const db=r.schedule==='daily'?'':`<span style="font-size:0.7rem;background:var(--bg);padding:2px 6px;border-radius:8px;margin-left:6px;">${r.schedule}</span>`;
+          const isHighlighted = highlights[ds]?.includes(r.id);
           let goalHtml = r.goal ? `<div class="routine-goal">🎯 ${r.goal}</div>` : '';
           let extraGoalsHtml = r.extraGoals && r.extraGoals.length ? `<div class="routine-extra-goals">${r.extraGoals.map(g=>`<span class="extra-goal-badge">• ${g}</span>`).join('')}</div>` : '';
-          return `<div class="routine-card ${done?'completed':''} ${r.priority?'priority':''}" onclick="toggleRoutine('${r.id}','${ds}')">
+          
+          return `<div class="routine-card ${done?'completed':''} ${r.priority?'priority':''} ${isHighlighted?'highlighted':''}" onclick="handleRoutineTap('${r.id}','${ds}')">
             <div class="check-box">${done?'✓':''}</div>
             <div class="routine-info">
               <div class="routine-header"><div class="routine-label">${r.title}</div>
@@ -802,38 +828,34 @@
       }
     }
     
-    function toggleRoutine(id,ds){ if(!records[ds]) records[ds]={}; records[ds][id]=!records[ds][id]; saveRecords(); renderRoutineView(); if(navigator.vibrate) navigator.vibrate(20); }
+    function toggleRoutine(id,ds){ 
+      if(!records[ds]) records[ds]={}; 
+      records[ds][id]=!records[ds][id]; 
+      saveRecords(); renderRoutineView(); 
+      if(navigator.vibrate) navigator.vibrate(20); 
+    }
     
-    // === PERSISTENT TASK RENDERING ===
     function renderTasks(){
       const container=document.getElementById('task-list');
       const todayStr = getLocalDate(new Date());
-      
       let todayTasks=[], overdueTasks=[], upcomingTasks=[], completedTasks=[];
-      
       tasks.forEach(t => {
-        if(t.completed) {
-          completedTasks.push(t);
-        } else {
+        if(t.completed) completedTasks.push(t);
+        else {
           if(t.date === todayStr) todayTasks.push(t);
           else if(t.date < todayStr) overdueTasks.push(t);
           else upcomingTasks.push(t);
         }
       });
-      
-      // Sort upcoming by date
       upcomingTasks.sort((a,b) => a.date.localeCompare(b.date));
-      overdueTasks.sort((a,b) => a.date.localeCompare(b.date)); // Oldest first
+      overdueTasks.sort((a,b) => a.date.localeCompare(b.date));
       
       let html = '';
-      
-      // Helper to render a single task
       const renderTaskCard = (t, isOverdue, isToday) => {
         const pc=`p${t.priority}`; 
         const overdueBadge = isOverdue ? `<span class="task-date-badge overdue">⚠️ Overdue</span>` : '';
-        const todayBadge = isToday ? `<span class="task-date-badge today">⚡ Today</span>` : '';
-        const dateDisplay = `${formatDateDisplay(t.date)}`;
-        
+        const todayBadge = isToday ? `<span class="task-date-badge today"> Today</span>` : '';
+        const dateDisplay = formatDateDisplay(t.date);
         return `<div class="task-card ${t.completed?'completed':''} ${isOverdue?'overdue':''} ${isToday?'today':''}" data-id="${t.id}">
           <div class="check-overlay"><span>✅</span></div>
           <div class="task-checkbox ${t.completed?'checked':''}" onclick="toggleTaskComplete('${t.id}')"></div>
@@ -841,45 +863,19 @@
             <div class="task-header"><div class="task-title"><span class="cat-icon">📋</span> ${t.name}</div>
             ${t.completed?'<span style="font-size:0.7rem;color:var(--success);font-weight:600;">✅ Done</span>':`${overdueBadge}${todayBadge}`}
             </div>
-            <div class="task-meta">
-              <span class="task-date-badge">${dateDisplay}</span>
-              ${t.time?`<span>⏰ ${t.time}</span>`:''}
-              <span class="prio-badge ${pc}"><span class="prio-flag"></span>${t.priority}</span>
-            </div>
+            <div class="task-meta"><span class="task-date-badge">${dateDisplay}</span>${t.time?`<span>⏰ ${t.time}</span>`:''}<span class="prio-badge ${pc}"><span class="prio-flag"></span>${t.priority}</span></div>
             <div class="task-actions"><button class="task-delete" onclick="deleteTask('${t.id}')">️</button></div>
           </div>
         </div>`;
       };
-
-      if(todayTasks.length) {
-        html += `<div class="section-header">⚡ Today</div>`;
-        html += todayTasks.map(t => renderTaskCard(t, false, true)).join('');
-      }
-      
-      if(overdueTasks.length) {
-        html += `<div class="section-header">🔥 Overdue</div>`;
-        html += overdueTasks.map(t => renderTaskCard(t, true, false)).join('');
-      }
-      
-      if(upcomingTasks.length) {
-        html += `<div class="section-header">📅 Upcoming</div>`;
-        html += upcomingTasks.map(t => renderTaskCard(t, false, false)).join('');
-      }
-      
-      if(todayTasks.length === 0 && overdueTasks.length === 0 && upcomingTasks.length === 0) {
-        html += `<div class="empty-state"><div style="font-size:3rem;margin-bottom:12px;">📝</div><div>No active tasks.</div></div>`;
-      }
-
-      // Completed Section
-      if(showCompletedTasks && completedTasks.length > 0) {
-        html += `<div class="section-header">✅ Completed</div>`;
-        html += completedTasks.map(t => renderTaskCard(t, false, false)).join('');
-      }
-      
+      if(todayTasks.length) { html += `<div class="section-header">⚡ Today</div>`; html += todayTasks.map(t => renderTaskCard(t, false, true)).join(''); }
+      if(overdueTasks.length) { html += `<div class="section-header">🔥 Overdue</div>`; html += overdueTasks.map(t => renderTaskCard(t, true, false)).join(''); }
+      if(upcomingTasks.length) { html += `<div class="section-header">📅 Upcoming</div>`; html += upcomingTasks.map(t => renderTaskCard(t, false, false)).join(''); }
+      if(todayTasks.length === 0 && overdueTasks.length === 0 && upcomingTasks.length === 0) { html += `<div class="empty-state"><div style="font-size:3rem;margin-bottom:12px;"></div><div>No active tasks.</div></div>`; }
+      if(showCompletedTasks && completedTasks.length > 0) { html += `<div class="section-header">✅ Completed</div>`; html += completedTasks.map(t => renderTaskCard(t, false, false)).join(''); }
       container.innerHTML = html;
     }
     
-    // === CALENDAR & ANALYTICS (UNCHANGED LOGIC) ===
     function renderMonthlyCalendar(){
       const y=calendarDate.getFullYear(), m=calendarDate.getMonth();
       document.getElementById('calendar-month').textContent=calendarDate.toLocaleDateString('en-US',{month:'long',year:'numeric'});
@@ -922,7 +918,7 @@
         return `<div class="habit-score-card">
           <svg class="score-ring" viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="24"/><circle class="fill" cx="28" cy="28" r="24" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="14" font-weight="bold" fill="var(--text)">${score}</text></svg>
           <div class="score-info"><div class="score-title">${r.title}</div>
-          <div class="score-metrics"><div class="metric">🔥 <strong>${streak}d</strong></div><div class="metric">🏆 <strong>${maxStreak}d</strong></div><div class="metric">✅ <strong>${success}%</strong></div></div>
+          <div class="score-metrics"><div class="metric"> <strong>${streak}d</strong></div><div class="metric">🏆 <strong>${maxStreak}d</strong></div><div class="metric">✅ <strong>${success}%</strong></div></div>
           <div class="score-bar"><div class="score-bar-fill" style="width:${success}%"></div></div></div>
         </div>`;
       }).join('');
@@ -967,8 +963,8 @@
       routines.forEach(r=>{ const streak=calcRoutineStreak(r); const maxStreak=calcRoutineMaxStreak(r); const success=calcRoutineSuccessRate(r);
         if(maxStreak>=7) milestones.push({icon:'🥉', title:`${r.title}`, desc:`${maxStreak} Day Streak`});
         if(maxStreak>=30) milestones.push({icon:'🥈', title:`${r.title}`, desc:`${maxStreak} Day Streak`});
-        if(maxStreak>=100) milestones.push({icon:'🥇', title:`${r.title}`, desc:`${maxStreak} Day Streak`});
-        if(success===100 && streak>=30) milestones.push({icon:'', title:`${r.title}`, desc:`Perfect Score`});
+        if(maxStreak>=100) milestones.push({icon:'', title:`${r.title}`, desc:`${maxStreak} Day Streak`});
+        if(success===100 && streak>=30) milestones.push({icon:'💯', title:`${r.title}`, desc:`Perfect Score`});
       });
       if(!milestones.length){ grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--sub);padding:20px">Keep going to unlock milestones!</div>'; return; }
       grid.innerHTML=milestones.slice(0,6).map(m=>`<div class="milestone-item"><div class="trophy">${m.icon}</div><div class="milestone-title">${m.title}</div><div class="milestone-desc">${m.desc}</div></div>`).join('');
@@ -982,8 +978,8 @@
       for(let w=15;w>=0;w--){ for(let d=6;d>=0;d--){ const dt=new Date(today); dt.setDate(dt.getDate()-(w*7+d)); const ds=getLocalDate(dt); const total = routines.length + tasks.filter(t=>t.date===ds).length; const done = routines.filter(r=>records[ds]?.[r.id]).length + tasks.filter(t=>t.date===ds && t.completed).length; const pct = total?(done/total):0; let level=0; if(pct>=0.25) level=1; if(pct>=0.5) level=2; if(pct>=0.75) level=3; if(pct>=1) level=4; grid.innerHTML+=`<div class="heat-cell heat-${level}" title="${ds}: ${Math.round(pct*100)}%"></div>`; } }
     }
 
-    function exportAllData(){ const data={routines, tasks, records, exportedAt:new Date().toISOString()}; const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`routine-tracker-backup-${getLocalDate()}.json`; document.body.appendChild(a); a.click(); a.remove(); showToast('📤 Exported All Data'); }
-    function importAllData(input){ const file=input.files[0]; if(!file) return; if(!confirm('⚠️ Overwrite all data?')) { input.value=''; return; } const reader=new FileReader(); reader.onload=e=>{ try{ const data=JSON.parse(e.target.result); if(data.routines) routines=data.routines; if(data.tasks) tasks=data.tasks; if(data.records) records=data.records; saveRoutines(); saveTasks(); saveRecords(); showToast('📥 Imported Successfully'); }catch(err){ showToast('❌ Invalid File'); } }; reader.readAsText(file); input.value=''; }
+    function exportAllData(){ const data={routines, tasks, records, highlights, exportedAt:new Date().toISOString()}; const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`routine-tracker-backup-${getLocalDate()}.json`; document.body.appendChild(a); a.click(); a.remove(); showToast('📤 Exported All Data'); }
+    function importAllData(input){ const file=input.files[0]; if(!file) return; if(!confirm('⚠️ Overwrite all data?')) { input.value=''; return; } const reader=new FileReader(); reader.onload=e=>{ try{ const data=JSON.parse(e.target.result); if(data.routines) routines=data.routines; if(data.tasks) tasks=data.tasks; if(data.records) records=data.records; if(data.highlights) highlights=data.highlights; saveRoutines(); saveTasks(); saveRecords(); saveHighlights(); showToast('📥 Imported Successfully'); }catch(err){ showToast(' Invalid File'); } }; reader.readAsText(file); input.value=''; }
     function addExtraGoalToModal(){ const container = document.getElementById('extra-goals-container-modal'); container.innerHTML+=`<div class="extra-goal-item"><input type="text" placeholder="Extra goal..."><button class="extra-goal-remove" onclick="this.parentElement.remove()">✕</button></div>`; }
 
     function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1500); }
