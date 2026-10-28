@@ -1,5 +1,5 @@
 // BUMPED TO v6 TO FORCE THE UPDATE
-const CACHE_NAME = 'routine-tracker-v6'; 
+const CACHE_NAME = 'routine-tracker-v7'; 
 
 const ASSETS = [
   './', 
